@@ -1,0 +1,375 @@
+/*------------------------------------------------------------------------------
+ **     Ident: Sogeti Smart Mobile Solutions
+ **    Author: rene
+ ** Copyright: (c) Apr 24, 2011 Sogeti Nederland B.V. All Rights Reserved.
+ **------------------------------------------------------------------------------
+ ** Sogeti Nederland B.V.            |  No part of this file may be reproduced  
+ ** Distributed Software Engineering |  or transmitted in any form or by any        
+ ** Lange Dreef 17                   |  means, electronic or mechanical, for the      
+ ** 4131 NJ Vianen                   |  purpose, without the express written    
+ ** The Netherlands                  |  permission of the copyright holder.
+ *------------------------------------------------------------------------------
+ *
+ *   This file is part of OpenGPSTracker.
+ *
+ *   OpenGPSTracker is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   OpenGPSTracker is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with OpenGPSTracker.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+package nl.sogeti.android.gpstracker.db;
+
+import android.content.ContentUris;
+import android.net.Uri;
+import android.net.Uri.Builder;
+import android.provider.BaseColumns;
+
+/**
+ * The GPStracking provider stores all static information about GPStracking.
+ * 
+ * @version $Id: GPStracking.java 1176 2011-12-27 17:02:52Z rcgroot $
+ * @author rene (c) Jan 22, 2009, Sogeti B.V.
+ */
+public final class GPStracking
+{
+   /** The authority of this provider: nl.sogeti.android.gpstracker */
+   public static final String AUTHORITY = "nl.sogeti.android.gpstracker";
+   /** The content:// style Uri for this provider, content://nl.sogeti.android.gpstracker */
+   public static final Uri CONTENT_URI = Uri.parse( "content://" + GPStracking.AUTHORITY );
+   /** The name of the database file */
+   static final String DATABASE_NAME = "GPSLOG.db";
+   /** The version of the database schema */
+   static final int DATABASE_VERSION = 11;
+
+   /**
+    * This table contains tracks.
+    * 
+    * @author rene
+    */
+   public static final class Tracks extends TracksColumns implements android.provider.BaseColumns
+   {
+      /** The MIME type of a CONTENT_URI subdirectory of a single track. */
+      public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/vnd.nl.sogeti.android.track";
+      /** The MIME type of CONTENT_URI providing a directory of tracks. */
+      public static final String CONTENT_TYPE = "vnd.android.cursor.dir/vnd.nl.sogeti.android.track";
+      /** The content:// style URL for this provider, content://nl.sogeti.android.gpstracker/tracks */
+      public static final Uri CONTENT_URI = Uri.parse( "content://" + GPStracking.AUTHORITY + "/" + Tracks.TABLE );
+
+      /** The name of this table */
+      public static final String TABLE = "tracks";
+      static final String CREATE_STATEMENT = 
+         "CREATE TABLE " + Tracks.TABLE + "(" + " " + Tracks._ID           + " " + Tracks._ID_TYPE + 
+                                          "," + " " + Tracks.NAME          + " " + Tracks.NAME_TYPE + 
+                                          "," + " " + Tracks.CREATION_TIME + " " + Tracks.CREATION_TIME_TYPE +
+                 //Added for Bixi tracking
+                                          "," + " " + Tracks.START_STATION_ID + " " + Tracks.START_ID_TYPE +
+                                          "," + " " + Tracks.START_STATION_NAME + " " + Tracks.START_NAME_TYPE +
+                                          "," + " " + Tracks.END_STATION_ID + " " + Tracks.END_ID_TYPE +
+                                          "," + " " + Tracks.END_STATION_NAME + " " + Tracks.END_NAME_TYPE +
+                                          "," + " " + Tracks.START_REASON + " " + Tracks.START_REASON_TYPE +
+                                          "," + " " + Tracks.END_REASON + " " + Tracks.END_REASON_TYPE +
+                                          "," + " " + Tracks.WITH_HELMET + " " + Tracks.WITH_HELMET_TYPE +
+                                          "," + " " + Tracks.FREE_DESCRIPTION + " " + Tracks.FREE_DESCRIPTION_TYPE +
+                 //End of add
+                                          ");";
+
+       //TODO: Add here the data per track I wanna add -- for new databases
+       //Tracks.STATION_ID_START --which type ?
+        //Can I nest stuff ? (if I wanted to specify location and availability data at time of rental ?)
+        // Lat/Long -- NbBikes -- NbDocks -- station Name ex : Notre Dame / Place Jacques Cartier
+       //==> I can do it post process if I have availability data history, based on time. Minimum data is begining location of track
+       //OR have a preset list of station names and add every time a new entry is made. Note : this suggest having an other table
+       //Tracks.STATION_ID_END --which type ?
+       //See above
+       //Should I put Terminal name directly in here ?
+       //Tracks.REASON_START//Home, work, out or activity based ? --which type ?
+       //Tracks.Reason_END  //Home, work, out
+       //Tracks.Helmet -- Boolean type
+       //Tracks.ServiceRating -- See ratingbar GUI element
+       //Tracks.FreeField -- String, to describe additional info about a tracks (ex : rating explanation)
+       
+       static final String[] UPGRADE_STATEMENT_10_TO_11 =
+               {
+                       "ALTER TABLE " + Tracks.TABLE + " ADD COLUMN " + TracksColumns.START_STATION_ID + " " + TracksColumns.START_ID_TYPE +";",
+                       "ALTER TABLE " + Tracks.TABLE + " ADD COLUMN " + TracksColumns.START_STATION_NAME + " " + TracksColumns.START_NAME_TYPE +";",
+                       "ALTER TABLE " + Tracks.TABLE + " ADD COLUMN " + TracksColumns.END_STATION_ID + " " + TracksColumns.END_ID_TYPE +";",
+                       "ALTER TABLE " + Tracks.TABLE + " ADD COLUMN " + TracksColumns.END_STATION_NAME + " " + TracksColumns.END_NAME_TYPE +";",
+                       "ALTER TABLE " + Tracks.TABLE + " ADD COLUMN " + TracksColumns.START_REASON + " " + TracksColumns.START_REASON_TYPE +";",
+                       "ALTER TABLE " + Tracks.TABLE + " ADD COLUMN " + TracksColumns.END_REASON + " " + TracksColumns.END_REASON_TYPE +";",
+                       "ALTER TABLE " + Tracks.TABLE + " ADD COLUMN " + TracksColumns.WITH_HELMET + " " + TracksColumns.WITH_HELMET_TYPE +";",
+                       "ALTER TABLE " + Tracks.TABLE + " ADD COLUMN " + TracksColumns.SERVICE_RATING + " " + TracksColumns.SERVICE_RATING_TYPE +";",
+                       "ALTER TABLE " + Tracks.TABLE + " ADD COLUMN " + TracksColumns.FREE_DESCRIPTION + " " + TracksColumns.FREE_DESCRIPTION_TYPE +";"
+               };
+   }
+   
+   /**
+    * This table contains segments.
+    * 
+    * @author rene
+    */
+   public static final class Segments extends SegmentsColumns implements android.provider.BaseColumns
+   {
+
+      /** The MIME type of a CONTENT_URI subdirectory of a single segment. */
+      public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/vnd.nl.sogeti.android.segment";
+      /** The MIME type of CONTENT_URI providing a directory of segments. */
+      public static final String CONTENT_TYPE = "vnd.android.cursor.dir/vnd.nl.sogeti.android.segment";
+
+      /** The name of this table, segments */
+      public static final String TABLE = "segments";
+      static final String CREATE_STATMENT = 
+         "CREATE TABLE " + Segments.TABLE + "(" + " " + Segments._ID   + " " + Segments._ID_TYPE + 
+                                            "," + " " + Segments.TRACK + " " + Segments.TRACK_TYPE + 
+                                            ");";
+   }
+
+   /**
+    * This table contains waypoints.
+    * 
+    * @author rene
+    */
+   public static final class Waypoints extends WaypointsColumns implements android.provider.BaseColumns
+   {
+
+      /** The MIME type of a CONTENT_URI subdirectory of a single waypoint. */
+      public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/vnd.nl.sogeti.android.waypoint";
+      /** The MIME type of CONTENT_URI providing a directory of waypoints. */
+      public static final String CONTENT_TYPE = "vnd.android.cursor.dir/vnd.nl.sogeti.android.waypoint";
+      
+      /** The name of this table, waypoints */
+      public static final String TABLE = "waypoints";
+      static final String CREATE_STATEMENT = "CREATE TABLE " + Waypoints.TABLE + 
+      "(" + " " + BaseColumns._ID + " " + WaypointsColumns._ID_TYPE + 
+      "," + " " + WaypointsColumns.LATITUDE  + " " + WaypointsColumns.LATITUDE_TYPE + 
+      "," + " " + WaypointsColumns.LONGITUDE + " " + WaypointsColumns.LONGITUDE_TYPE + 
+      "," + " " + WaypointsColumns.TIME      + " " + WaypointsColumns.TIME_TYPE + 
+      "," + " " + WaypointsColumns.SPEED     + " " + WaypointsColumns.SPEED + 
+      "," + " " + WaypointsColumns.SEGMENT   + " " + WaypointsColumns.SEGMENT_TYPE + 
+      "," + " " + WaypointsColumns.ACCURACY  + " " + WaypointsColumns.ACCURACY_TYPE + 
+      "," + " " + WaypointsColumns.ALTITUDE  + " " + WaypointsColumns.ALTITUDE_TYPE + 
+      "," + " " + WaypointsColumns.BEARING   + " " + WaypointsColumns.BEARING_TYPE + 
+      ");";
+
+
+       //wooot, update functionnality to the databse, means database versioning.
+      static final String[] UPGRADE_STATEMENT_7_TO_8 = 
+         {
+            "ALTER TABLE " + Waypoints.TABLE + " ADD COLUMN " + WaypointsColumns.ACCURACY + " " + WaypointsColumns.ACCURACY_TYPE +";",
+            "ALTER TABLE " + Waypoints.TABLE + " ADD COLUMN " + WaypointsColumns.ALTITUDE + " " + WaypointsColumns.ALTITUDE_TYPE +";",
+            "ALTER TABLE " + Waypoints.TABLE + " ADD COLUMN " + WaypointsColumns.BEARING  + " " + WaypointsColumns.BEARING_TYPE +";"
+         };
+
+      /**
+       * Build a waypoint Uri like:
+       * content://nl.sogeti.android.gpstracker/tracks/2/segments/1/waypoints/52
+       * using the provided identifiers
+       * 
+       * @param trackId
+       * @param segmentId
+       * @param waypointId
+       * 
+       * @return
+       */
+      public static Uri buildUri(long trackId, long segmentId, long waypointId)
+      {
+         Builder builder = Tracks.CONTENT_URI.buildUpon();
+         ContentUris.appendId(builder, trackId);
+         builder.appendPath(Segments.TABLE);
+         ContentUris.appendId(builder, segmentId);
+         builder.appendPath(Waypoints.TABLE);
+         ContentUris.appendId(builder, waypointId);
+         
+         return builder.build();
+      }
+   }
+   
+   /**
+    * This table contains media URI's.
+    * 
+    * @author rene
+    */
+   public static final class Media extends MediaColumns implements android.provider.BaseColumns
+   {
+
+      /** The MIME type of a CONTENT_URI subdirectory of a single media entry. */
+      public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/vnd.nl.sogeti.android.media";
+      /** The MIME type of CONTENT_URI providing a directory of media entry. */
+      public static final String CONTENT_TYPE = "vnd.android.cursor.dir/vnd.nl.sogeti.android.media";
+      
+      /** The name of this table */
+      public static final String TABLE = "media";
+      static final String CREATE_STATEMENT = "CREATE TABLE " + Media.TABLE + 
+      "(" + " " + BaseColumns._ID       + " " + MediaColumns._ID_TYPE + 
+      "," + " " + MediaColumns.TRACK    + " " + MediaColumns.TRACK_TYPE + 
+      "," + " " + MediaColumns.SEGMENT  + " " + MediaColumns.SEGMENT_TYPE + 
+      "," + " " + MediaColumns.WAYPOINT + " " + MediaColumns.WAYPOINT_TYPE + 
+      "," + " " + MediaColumns.URI      + " " + MediaColumns.URI_TYPE + 
+      ");";
+      public static final Uri CONTENT_URI = Uri.parse( "content://" + GPStracking.AUTHORITY + "/" + Media.TABLE );
+   }
+   
+   /**
+    * This table contains media URI's.
+    * 
+    * @author rene
+    */
+   public static final class MetaData extends MetaDataColumns implements android.provider.BaseColumns
+   {
+
+      /** The MIME type of a CONTENT_URI subdirectory of a single metadata entry. */
+      public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/vnd.nl.sogeti.android.metadata";
+      /** The MIME type of CONTENT_URI providing a directory of media entry. */
+      public static final String CONTENT_TYPE = "vnd.android.cursor.dir/vnd.nl.sogeti.android.metadata";
+      
+      /** The name of this table */
+      public static final String TABLE = "metadata";
+      static final String CREATE_STATEMENT = "CREATE TABLE " + MetaData.TABLE + 
+      "(" + " " + BaseColumns._ID          + " " + MetaDataColumns._ID_TYPE + 
+      "," + " " + MetaDataColumns.TRACK    + " " + MetaDataColumns.TRACK_TYPE + 
+      "," + " " + MetaDataColumns.SEGMENT  + " " + MetaDataColumns.SEGMENT_TYPE + 
+      "," + " " + MetaDataColumns.WAYPOINT + " " + MetaDataColumns.WAYPOINT_TYPE + 
+      "," + " " + MetaDataColumns.KEY      + " " + MetaDataColumns.KEY_TYPE + 
+      "," + " " + MetaDataColumns.VALUE    + " " + MetaDataColumns.VALUE_TYPE + 
+      ");";
+      /**
+       * content://nl.sogeti.android.gpstracker/metadata
+       */
+      public static final Uri CONTENT_URI = Uri.parse( "content://" + GPStracking.AUTHORITY + "/" + MetaData.TABLE );
+   }
+   
+   /**
+    * Columns from the tracks table.
+    * 
+    * @author rene
+    */
+   public static class TracksColumns
+   {
+      public static final String NAME          = "name";
+      public static final String CREATION_TIME = "creationtime";
+      static final String CREATION_TIME_TYPE   = "INTEGER NOT NULL";
+      static final String NAME_TYPE            = "TEXT";
+      static final String _ID_TYPE             = "INTEGER PRIMARY KEY AUTOINCREMENT";
+       
+      //Additions for Bixi trips tracking
+       public static final String START_STATION_ID = "startStationID";
+       public static final String START_STATION_NAME = "startStationName";
+       public static final String END_STATION_ID = "endStationID";
+       public static final String END_STATION_NAME = "endStationName";
+       static final String START_ID_TYPE = "INTEGER";
+       static final String END_ID_TYPE = "INTEGER";
+       static final String START_NAME_TYPE = "TEXT";
+       static final String END_NAME_TYPE = "TEXT";
+       
+       public static final String START_REASON = "startReason";
+       public static final String END_REASON = "endReason";
+       static final String START_REASON_TYPE = "TEXT";
+       static final String END_REASON_TYPE = "TEXT";
+
+       public static final String WITH_HELMET = "withHelmet";
+       static final String WITH_HELMET_TYPE = "INTEGER";
+       
+       public static final String SERVICE_RATING = "serviceRating";
+       static final String SERVICE_RATING_TYPE = "INTEGER";
+
+       public static final String FREE_DESCRIPTION = "freeDescription";
+       static final String FREE_DESCRIPTION_TYPE = "TEXT";
+   }
+
+   /**
+    * Columns from the segments table.
+    *
+    * @author rene
+    */
+   public static class SegmentsColumns
+   {
+      /** The track _id to which this segment belongs */
+      public static final String TRACK = "track";     
+      static final String TRACK_TYPE   = "INTEGER NOT NULL";
+      static final String _ID_TYPE     = "INTEGER PRIMARY KEY AUTOINCREMENT";
+   }
+
+   /**
+    * Columns from the waypoints table.
+    * 
+    * @author rene
+    */
+   public static class WaypointsColumns
+   {
+
+      /** The latitude */
+      public static final String LATITUDE = "latitude";
+      /** The longitude */
+      public static final String LONGITUDE = "longitude";
+      /** The recorded time */
+      public static final String TIME = "time";
+      /** The speed in meters per second */
+      public static final String SPEED = "speed";
+      /** The segment _id to which this segment belongs */
+      public static final String SEGMENT = "tracksegment";
+      /** The accuracy of the fix */
+      public static final String ACCURACY = "accuracy";
+      /** The altitude */
+      public static final String ALTITUDE = "altitude";
+      /** the bearing of the fix */
+      public static final String BEARING = "bearing";
+
+      static final String LATITUDE_TYPE  = "REAL NOT NULL";
+      static final String LONGITUDE_TYPE = "REAL NOT NULL";
+      static final String TIME_TYPE      = "INTEGER NOT NULL";
+      static final String SPEED_TYPE     = "REAL NOT NULL";
+      static final String SEGMENT_TYPE   = "INTEGER NOT NULL";
+      static final String ACCURACY_TYPE  = "REAL";
+      static final String ALTITUDE_TYPE  = "REAL";
+      static final String BEARING_TYPE   = "REAL";
+      static final String _ID_TYPE       = "INTEGER PRIMARY KEY AUTOINCREMENT";
+   }
+   
+   /**
+    * Columns from the media table.
+    * 
+    * @author rene
+    */
+   public static class MediaColumns
+   {
+      /** The track _id to which this segment belongs */
+      public static final String TRACK    = "track";     
+      static final String TRACK_TYPE      = "INTEGER NOT NULL";
+      public static final String SEGMENT  = "segment";     
+      static final String SEGMENT_TYPE    = "INTEGER NOT NULL";
+      public static final String WAYPOINT = "waypoint";     
+      static final String WAYPOINT_TYPE   = "INTEGER NOT NULL";
+      public static final String URI      = "uri";     
+      static final String URI_TYPE        = "TEXT";
+      static final String _ID_TYPE        = "INTEGER PRIMARY KEY AUTOINCREMENT";
+   }
+   
+   /**
+    * Columns from the media table.
+    * 
+    * @author rene
+    */
+   public static class MetaDataColumns
+   {
+      /** The track _id to which this segment belongs */
+      public static final String TRACK    = "track";     
+      static final String TRACK_TYPE      = "INTEGER NOT NULL";
+      public static final String SEGMENT  = "segment";     
+      static final String SEGMENT_TYPE    = "INTEGER";
+      public static final String WAYPOINT = "waypoint";     
+      static final String WAYPOINT_TYPE   = "INTEGER";
+      public static final String KEY      = "key";          
+      static final String KEY_TYPE        = "TEXT NOT NULL";
+      public static final String VALUE    = "value";        
+      static final String VALUE_TYPE      = "TEXT NOT NULL";
+      static final String _ID_TYPE        = "INTEGER PRIMARY KEY AUTOINCREMENT";
+   }
+}

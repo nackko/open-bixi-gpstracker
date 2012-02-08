@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Open GPS Tracker</string>
+    <string name="service_start">Attivare servizio localizzazione</string>
+    <string name="service_gpsstatus">Localizzazione: %1$s (%2$s con %3$d satelliti)</string>
+    <string name="service_gpsnostatus">Localizzazione: %1$s (Precisione %2$s)</string>
+    <string name="service_networkstatus">Localizzazione: %1$s (%2$s con torri cellulari e wifi)</string>
+    <string name="service_gpsdisabled">GPS disabilitato, localizzazione senza effetto.</string>
+    <string name="service_gpsenabled">GPS abilitato, inizio localizzazione.</string>
+    <string name="service_connectiondisabled">Rete disabilitata, localizzazione con rete senza effetto.</string>
+    <string name="service_datadisabled">Localizzazione rete disabilitata, localizzazione con rete senza effetto.</string>
+    <string name="service_dataenabled">Localizzazione rete abilitata, inizio localizzazione.</string>
+    <string name="service_gpsproblem">Receiving no location information</string>
+    
+    <!-- Dialogs -->
+    <string name="dialog_select_media_title">Selezionare nota</string>
+    <string name="dialog_select_media_message">Note multiple trovate per questa localizzazione, selezionarne una per aprire</string>
+    <string name="dialog_tracking_title">Controllo tracce</string>
+    <string name="dialog_routename_title">Nome traccia</string>
+    <string name="dialog_routename_message">Entrare nome traccia</string>
+    <string name="dialog_routename_default">Traccia %1$tY-%2$tm-%3$td %4$tH:%5$tM</string>
+    <string name="dialog_notrack_title">Nessuna traccia selezionata</string>
+    <string name="dialog_notrack_message">Selezionare traccia prima di esportare</string>
+    <string name="dialog_delete_title">Cancellare traccia</string>
+    <string name="dialog_delete_message">Confermare cancellazione traccia %s</string>
+    <string name="dialog_nooiabout">OI A proposito</string>
+    <string name="dialog_nooiabout_message">Applicazione \"OI A proposito\" dal progetto OpenIntents richiesta per visualizzare informazione A proposito.</string>
+    <string name="dialog_layer_title">Attivare coperture</string>
+    <string name="dialog_graphtype_title">Tipo grafico</string>
+    <string name="dialog_notetext_title">Nota testo</string>
+    <string name="dialog_notetext_message">Entrare nota testo per localizzazione corrente</string>
+    <string name="dialog_notename_title">Marcare</string>
+    <string name="dialog_notename_message">Entrare nome per questa localizzazione</string>
+    <string name="logcontrol_start">Avvio tracciatura</string>
+    <string name="logcontrol_pause">Pausa tracciatura</string>
+    <string name="logcontrol_resume">Riavvio tracciatura</string>
+    <string name="logcontrol_stop">Stop tracciatura</string>
+    <string name="layer_regular">Mappa normale</string>
+    <string name="layer_satellite">Satellite</string>
+    <string name="layer_traffic">Traffico</string>
+    <string name="layer_speed">Velocità</string>
+    <string name="layer_altitude">Altitudine</string>
+    <string name="layer_compass">Compasso</string>
+    <string name="layer_location">Mia Localizzazione</string>
+    <string name="layer_cloudmade">Mappe CloudMade</string>
+    <string name="layer_maknik">Mapnik</string>
+    <string name="layer_bicycle">OpenCycleMap</string>
+    <string name="dialog_vacuum_title">Compressione dati</string>
+    <string name="dialog_vacuum_message">Ripristina spazio perso dovuto a frammentazione comprimendo banca dati.</string>
+    <string name="dialog_import_title">Importo GPX</string>
+    <string name="dialog_import_message">Volete importare the GPX %1$s ?</string>
+    <string name="dialog_import_picker">Importo file GPX </string>
+    <string name="menu_picker">Importo</string>
+    <string name="dialog_nooipicker">OI File Manager</string>
+    <string name="dialog_nooipicker_message">Applicazione \"OI File Manager\" dal progetto OpenIntents richiesta per scelta files. Dopo accetto OI File Manager EULA bottone importo funziona.</string>
+    <string name="dialog_contrib_title">Contribuire</string>
+    <string name="dialog_bundlecreate_hint">New bundle name</string>
+    <string name="dialog_trackdescription_hint">Description of the track</string>
+    <string name="dialog_public">Public posting</string>
+    <string name="dialog_description_title">Track description</string>
+    <string name="dialog_description_message">Please supply additional information before uploading</string>
+    <string name="dialog_bundle">Bundle: %1$s</string>
+    <string name="authentication_redirect">Placing authentication request</string>
+    <string name="loading">Loading&#8230;</string>
+    <string name="no_information_available">No information available.</string>
+    <string name="taskerror_gpx_import">Importing GPX data</string>
+    <string name="taskerror_xml_write">Writing XML data</string>
+    <string name="taskerror_breadcrumbs">Retrieving data from GoBreadcrumbs</string>
+    <string name="dialog_breadcrumbsconnect">Breadcrumbs</string>
+    <string name="dialog_breadcrumbsconnect_message">Authorize Open GPS Tracker with Breadcrumbs?</string>
+    <string name="dialog_contrib_message">
+    <b>Code</b>
+    \n
+    This application and the source code are publicly available. Feel free to submit
+    a patch. All code contributions are very welcome. The complete application source is 
+    available under GPL license at http://code.google.com/p/open-gpstracker/source
+    \n\n
+    <b>Errors</b>
+    \n
+    In case of an error, crash or fault please send a message. Log the error 
+    at http://code.google.com/p/open-gpstracker/issues/entry and make an important 
+    contribution to improve this application.  
+    \n\n
+    <b>Idea\'s</b>
+    \n
+    Do you have an idea that could improve this application? Explain your idea at
+    http://code.google.com/p/open-gpstracker/issues/entry
+    \n\n
+    <b>Donate</b>
+    \n
+    Hopefully you enjoyed the application, I love to hear if you did. A thank you 
+    or PayPal donation are appreciated at rcgroot@gmail.com
+    \n\n
+    </string>
+    
+    <!-- Messages -->
+    <string name="from">Tracciato il: </string>
+    <string name="no_tracks">Nessune tracce registrate</string>
+    <string name="ticker_saving">Salvaguardia: </string>
+    <string name="ticker_stored">Salvaguardato: </string>
+    <string name="ticker_failed">Impossibile salvaguardare percorso: </string>
+    <string name="error_filenotfound"> motivo: Impossibile trovare il file o il direttorio su scheda SD</string>
+    <string name="error_filename"> motivo: Nome file incorretto</string>
+    <string name="error_buildxml"> motivo: Errore costruzione XML</string>
+    <string name="error_writesdcard"> motivo: Errore scrittura su scheda SD</string>
+    <string name="error_response"> reason: Server response indicates error</string>
+    <string name="tweettext">%1$s: Percorso %2$s con velocità media %3$s durante %4$s #opengpstracker</string>
+    <string name="error_importgpx_xml">Errore lettura XML durante importo.</string>
+    <string name="error_importgpx_io">Errore lettura file durante importo.</string>
+    <string name="error_importgpx_parse">Errore lettura numero durante importo.</string>
+    
+    <!-- Buttons -->
+	<string name="btn_okay">OK</string>
+	<string name="btn_cancel">Annullare</string>
+	<string name="btn_save">Salvaguardare</string>
+	<string name="btn_selecttrack">Selezionare traccia</string>
+    <string name="btn_install">Installare</string>
+    <string name="btn_skip">Omettere</string>
+	
+    <!-- Menu's -->
+	<string name="menu_settings">Impostazioni</string>
+    <string name="menu_tracking">Tracciature</string>
+	<string name="menu_tracklist">Lista tracce</string>
+	<string name="menu_shareTrack">Condividere traccia</string>
+	<string name="menu_deleteTrack">Cancellare traccia</string>
+    <string name="menu_renameTrack">Rinominare traccia</string>
+    <string name="menu_statistics">Statistiche</string>
+    <string name="menu_about">A proposito</string>
+    <string name="menu_showLayers">Coperture</string>
+    <string name="menu_graphtype">Tipo grafico</string>
+    <string name="menu_insertnote">Scrivere nota</string>
+    <string name="menu_notename">Marcare con nome</string>
+    <string name="menu_notepicture">Prendere foto</string>
+    <string name="menu_notetext">Scrivere testo</string>
+    <string name="menu_notespeech">Registrazione vocale</string>
+    <string name="menu_notevideo">Registrazione video</string>
+    <string name="graphtype_timespeed">Velocità verso tempo</string>
+    <string name="graphtype_timealtitude">Altitudine verso tempo</string>
+    <string name="graphtype_distancespeed">Velocità verso distanza</string>
+    <string name="graphtype_distancealtitude">Altitudine verso distanza</string>
+    <string name="menu_vacuum">Compressione dati</string>
+    <string name="menu_contrib">Contribuire</string>
+    
+    <!-- Communicated -->
+    <string name="email_subject">Open GPS Tracker - Dati traccia</string>
+    <string name="email_gpxbody">Allegato traccia in formato GPS Exchange (GPX) come descritto su http://www.topografix.com/gpx.asp</string>
+    <string name="email_kmzbody">Allegato traccia in formato KMZ come descritto su http://code.google.com/apis/kml/documentation/kml_tut.html</string>
+    <string name="kmlVideoUnsupported">Embedded video non sopportato, utilizzare utensili zip per ricuperare %s file video dal file KMZ.</string>
+    <string name="kmlAudioUnsupported">Embedded audio non sopportato,utilizzare utensili zip per ricuperare %s file audio dal file KMZ</string>
+    
+    <!-- Screens -->
+    <string name="share_track">Condividere questa traccia</string>
+    <string name="share_explained">Condividere crea un esporto traccia con la maggior quantità di dati registrati come possibile.</string>
+    <string name="share_type">Scegliere formato traccia condivisa:</string>
+    <string name="share_name">Nome dell\'esporto:</string>
+    <string name="share_target">Mezzi di condivisione:</string>
+    <string name="sender_chooser">Scegliere applicazione emettitrice</string>
+    <string name="opengpstracker_title">Open GPS Tracker</string>
+    <string name="opengpstracker_settings">Parametri</string>
+    <string name="preference_display">Parametri display</string>
+    <string name="preference_behavior">Eseguire parametri </string>
+    <string name="logatstartup">Tracciatura ad avvio applicazione</string>
+    <string name="logatstartup_summary">Dopo l\'avvio, il servizio tracciatura comincia a registrare.</string>   
+    <string name="startupatboot">Avvio applicazione ad avvio cellulare</string>
+    <string name="startupatboot_summary">Dopo l\'avvio del cellulare,  il servizio tracciatura comincia a registrare.</string>   
+    <string name="disableblanking_title">Disabilitare oscuramento dello schermo</string>
+    <string name="disableblanking_summary">Mantenere schermo attivo durante tracciatura.</string>       
+    <string name="precision_title">Precisione tracciatura</string>
+    <string name="precision_summary">Intervalli entro fissi GPS.</string>
+    <string name="mapprovider_title">Prestatore mappe</string>
+    <string name="mapprovider_summary">Origine recupero dati mappe.</string>      
+    <string name="trackcoloring_title">Colore traccia</string>
+    <string name="trackcoloring_summary">Colore a utilizzare per traccia percorso.</string>
+    <string name="showsatellite_title">Immagini satelliti</string>
+    <string name="showsatellite_summary">Mostra vista satelliti Google Maps.</string>
+    <string name="showtraffic_title">Traffico</string>
+    <string name="showtraffic_summary">Mostra informazioni vista traffico Google Maps</string>
+    <string name="showspeed_title">Velocità GPS</string>
+    <string name="showspeed_summary">Mostra velocità dell\'ultimo fisso GPS.</string>
+    <string name="showaltitude_title">Altitudine GPS</string>
+    <string name="showaltitude_summary">Mostra altitudine dell\'ultimo fisso GPS.</string>
+    <string name="showcompass_title">Compasso</string>
+    <string name="showcompass_summary">Mostra compasso con ago puntato Nord.</string>
+    <string name="sanitycheck_title">Controllo precisione velocità e altitudine</string>
+    <string name="sanitycheck_summary">Accetta solo misure ragionevoli di velocità e altitudine.</string>
+    <string name="showlocation_title">Mia locazione</string>
+    <string name="showlocation_summary">Mostra Mia locazione sulla mappa</string>
+    <string name="units_title">Unità</string>
+    <string name="units_summary">Determina uso unità metriche o imperiali.</string>
+    <string name="stat_title">Statistiche - %s</string>
+    <string name="stat_maximumspeed">Velocità massima</string>
+    <string name="stat_maximumaltitude">Altitudine massima</string>
+    <string name="stat_minimalaltitide">Altitudine minima</string>
+    <string name="stat_overallaveragespeed">Velocità media generale</string>
+    <string name="stat_averagespeed">Velocità media</string>    
+    <string name="stat_distance">Distanza tracciata</string>    
+    <string name="stat_endtime">Ora fine</string>    
+    <string name="stat_starttime">Ora inizio</string>    
+    <string name="stat_trackname">Nome traccia</string>
+    <string name="stat_waypoints">Punti</string>
+    <string name="stat_elapsedtime">Elapsed</string>
+    <string name="stat_ascension">Total elevation</string>
+    <string name="track_list">Tracce</string>
+    <string name="search_label">Tracce</string>
+    <string name="search_description">Nomi tracce Open GPS Tracker</string>
+    <string name="search_hint">Ricerca tracce</string>
+    <string name="preference_sharing">Parametri condivisione</string>
+    <string name="jogmap_title">Codice carico Jogmap</string>
+    <string name="jogmap_summary">Codice autenticazione per carico su acconto jogmap.de</string>
+    <string name="jogmap_failed">Caricamento impossibile della traccia su jogmap.de: </string>
+    <string name="jogmap_success">Caricamento riuscito della traccia su jogmap.de: </string>
+    <string name="jogrunner_message">Entrare chiave accesso ottenuta da http://www.jogmap.de/civic4/?q=mobilinfo. </string>
+    <string name="import_track">Importare traccia nel Open GPS Tracker</string>
+    <string name="preference_logging">Localizzazione ed GPS</string>
+    <string name="customprecisiontime_title">Intervallo in minuti punto targa</string>
+    <string name="customprecisiontime_summary">Intervallo pausa del GPS entro punti.</string>
+    <string name="customprecisiondistance_title">Distanza in metri punto targa</string>
+    <string name="customprecisiondistance_summary">Distanza da coprire entro punti.</string>
+    <string name="gpsstatusmonitor_title">Monitor stato GPS</string>
+    <string name="gpsstatusmonitor_summary">Mostra numero satelliti utilizzati.</string>
+	<string name="osmusername_title">Nome utilizzatore OpenStreetMap</string>
+	<string name="osmusername_summary">Nome utilizzatore creato su http://www.openstreetmap.org/user/new</string>
+	<string name="osmusername_message">Acconto OpenStreetMap permette di redigere dati mappa per contribuire alla mappa. Open GPS Tracker lo utilizza per caricare nuovi dati GPS.</string>
+	<string name="osmpassword_title">Password OpenStreetMap</string>
+	<string name="osmpassword_summary">Password utilizzato su http://www.openstreetmap.org/user/new.</string>
+	<string name="osmpassword_message">Questa password verrà utilizzata su HTTP e Basic Authorization su openstreetmap.org server.</string>
+	<string name="osmvisibility_title">Visibilità pubblica tracce GPS su openstreetmap.org</string>
+	<string name="osmvisibility_summary">Consultare wiki openstreetmap.org wiki per maggiore informazione sui livelli visibili.</string>
+    <string name="osm_success">Caricamento riuscito della traccia su www.openstreetmap.org: </string>
+    <string name="osm_failed">Caricamento impossibile della traccia su www.openstreetmap.org: </string>
+    <string name="osmauth_message">Authorize Open GPS Tracker to upload traces to OpenStreetMap</string>
+    <string name="sddirectory_title">Direttorio scheda SD usato per salvaguardia tracce condivise</string>
+    <string name="sddirectory_summary">Tracce e media create sono salvaguardate su questo direttorio scheda SD.</string>
+    <string name="sddirectory_message">Entrare percorso aggiunto alla scheda SD per utilizzo dei files. Per esempio il /OpenGPSTracker/ utilizzato per difetto aggiunge un direttorio unico alla scheda SD e /Apps/OpenGPSTracker/ include entrambi.</string>
+    <string name="breadcrumbs_connect">Connect to GoBreadcrumbs</string>
+    
+<!-- ***************************
+   About information
+   ***************************-->
+   <string name="about_comments">Applicazione che registra, mediante GPS, l\'itinerario del vostro cellulare.</string>
+   <string name="about_activity_name_extended">A proposito %s</string>
+</resources>

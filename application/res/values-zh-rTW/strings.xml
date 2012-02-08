@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="app_name">開放式 GPS 追蹤器</string>
+    <string name="service_start">啟動日誌服務中</string>
+	<string name="service_gpsstatus">日誌： %1$s (%2$s 使用 %3$d 個衛星)</string>
+	<string name="service_gpsnostatus">日誌： %1$s (精確度 %2$s)</string>
+    <string name="service_networkstatus">日誌： %1$s (%2$s 使用基站和WiFi)</string>
+    <string name="service_gpsdisabled">GPS 已禁用，日誌將是無效的。</string>
+    <string name="service_gpsenabled">GPS 已啟用， 開始記錄。</string>
+    <string name="service_connectiondisabled">網路被禁用，網路位置的日誌將是無效的。</string>
+    <string name="service_datadisabled">網路位置被禁用，日誌將是無效的。</string>
+    <string name="service_dataenabled">網路位置已啟用，開始記錄。</string>
+    <string name="service_gpsproblem">Receiving no location information</string>
+    
+    <!-- Dialogs -->
+    <string name="dialog_select_media_title">選取註解</string>
+    <string name="dialog_select_media_message">對於這個位置發現了多個註解，請從中選取個來開啟。</string>
+    <string name="dialog_tracking_title">追蹤控制</string>
+	<string name="dialog_routename_title">命名路線</string>
+    <string name="dialog_routename_message">請輸入此路線的名稱</string>
+    <string name="dialog_routename_default">路線 %1$tY-%2$tm-%3$td %4$tH：%5$tM</string>
+    <string name="dialog_notrack_title">沒有選取路線</string>
+    <string name="dialog_notrack_message">在匯出之前請選取一個路線</string>
+    <string name="dialog_delete_title">刪除路線</string>
+    <string name="dialog_delete_message">請確認此路線的刪除操作</string>
+    <string name="dialog_nooiabout">缺少 OI About</string>
+    <string name="dialog_nooiabout_message">本軟體需要來自 OpenIntents 項目的\"OI About\"程式來顯示關於訊息。</string>
+    <string name="dialog_layer_title">啟動覆寫</string>
+    <string name="dialog_graphtype_title">圖類型</string>
+    <string name="dialog_notetext_title">文字附註</string>
+    <string name="dialog_notetext_message">為目前位置輸入一個文字附註</string>
+    <string name="dialog_notename_title">標記</string>
+    <string name="dialog_notename_message">為這個位置輸入一個名字</string>
+    <string name="logcontrol_start">開始追蹤</string>
+    <string name="logcontrol_pause">暫停追蹤</string>
+    <string name="logcontrol_resume">還原追蹤</string>
+    <string name="logcontrol_stop">停止追蹤</string>
+    <string name="layer_regular">普通地圖</string>
+    <string name="layer_satellite">衛星</string>
+    <string name="layer_traffic">交通</string>
+    <string name="layer_speed">速度</string>
+    <string name="layer_altitude">海拔</string>
+    <string name="layer_compass">指南針</string>
+    <string name="layer_location">我的位置</string>
+    <string name="layer_cloudmade">CloudMade 地圖</string>
+    <string name="layer_maknik">Mapnik</string>
+    <string name="layer_bicycle">OpenCycleMap</string>
+    <string name="dialog_vacuum_title">修剪資料</string>
+    <string name="dialog_vacuum_message">由於一個重建的資料庫造成的存儲碎片返回了空間遺失。</string>
+    <string name="dialog_import_title">GPX 匯入</string>
+    <string name="dialog_import_message">你是否想要匯入此 GPX %1$s ？</string>
+    <string name="dialog_import_picker">匯入 GPX 檔案</string>
+    <string name="menu_picker">匯入</string>
+    <string name="dialog_nooipicker">OI 檔案管理器</string>
+    <string name="dialog_nooipicker_message">需要來自 OpenIntents 項目的 \"OI 檔案管理器\" 來選取檔案。在接受 OI 檔案管理器的最終使用者許可協議後匯入按鈕即可用。</string>
+    <string name="dialog_contrib_title">捐獻</string>
+    <string name="dialog_contrib_message">
+    <b>代碼</b>
+    \n
+    本程式以及源碼都是開放的。歡迎提交補丁。所有在代碼上的貢獻都是值得稱讚的。完整的程式源碼可在 GPL 許可下從 http://code.google.com/p/open-gpstracker/source 獲得。    \n\n
+    <b>錯誤</b>
+    \n
+    假如出現錯誤，崩潰或故障，請傳送一條訊息。記錄於 http://code.google.com/p/open-gpstracker/issues/entry 之上來進行反饋，從而說明改善此程式。.  
+    \n\n
+    <b>創意</b>
+    \n
+    你有任何關於改善本程式的想法？請在 http://code.google.com/p/open-gpstracker/issues/entry 說明一下你的想法。
+    \n\n
+    <b>捐贈</b>
+    \n
+    希望你能喜歡本程式，假如你喜歡，我將非常的開心。如有意捐贈，請使用 PayPal 捐贈至賬戶 rcgroot@gmail.com    \n\n
+    </string>
+        
+    <!-- Messages -->
+    <string name="from">記錄：</string>
+    <string name="no_tracks">無已儲存路線</string>
+    <string name="ticker_saving">儲存中：</string>
+    <string name="ticker_stored">已儲存：</string>
+    <string name="ticker_failed">無法儲存路線：</string>
+    <string name="error_filenotfound">原因：無法在SD卡上找到檔案或資料夾</string>
+    <string name="error_filename"> 原因：錯誤的檔案名</string>
+    <string name="error_buildxml"> 原因：建立 XML 時錯誤</string>
+    <string name="error_writesdcard"> 原因：寫入到 SD 卡時錯誤</string>
+    <string name="tweettext">%1$s： 已行進 %2$s 統計出的平均速度是 %3$s 在 %4$s #opengpstracker</string>
+    <string name="error_importgpx_xml">無法在匯入時讀取 XML。</string>
+    <string name="error_importgpx_io">無法在匯入時讀取檔案。</string>
+    <string name="error_importgpx_parse">無法在匯入時讀取號碼。</string>
+    
+    <!-- Buttons -->
+	<string name="btn_okay">確認</string>
+	<string name="btn_cancel">取消</string>
+	<string name="btn_save">儲存</string>
+	<string name="btn_selecttrack">選取路線</string>
+    <string name="btn_install">安裝</string>
+    <string name="btn_skip">跳過</string>
+	
+    <!-- Menu's -->
+	<string name="menu_settings">設定</string>
+    <string name="menu_tracking">追蹤中</string>
+	<string name="menu_tracklist">列出路線</string>
+	<string name="menu_shareTrack">分享路線</string>
+	<string name="menu_deleteTrack">刪除路線</string>
+    <string name="menu_renameTrack">重新命名路線</string>
+    <string name="menu_statistics">統計</string>
+    <string name="menu_about">關於</string>
+    <string name="menu_showLayers">覆寫</string>
+    <string name="menu_graphtype">圖類型</string>
+    <string name="menu_insertnote">做註解</string>
+    <string name="menu_notename">為註解取個名</string>
+    <string name="menu_notepicture">獲取一張圖片</string>
+    <string name="menu_notetext">寫下文字</string>
+    <string name="menu_notespeech">錄製語音</string>
+    <string name="menu_notevideo">錄製視頻</string>
+    <string name="graphtype_timespeed">速度/時間</string>
+    <string name="graphtype_timealtitude">海拔/時間</string>
+    <string name="graphtype_distancespeed">速度/距離</string>
+    <string name="graphtype_distancealtitude">海拔/距離</string>
+    <string name="menu_vacuum">修剪資料</string>
+    <string name="menu_contrib">捐獻</string>
+    
+    <!-- Communicated -->
+    <string name="email_subject">開放式 GPS 追蹤器 - 追蹤資料</string>
+    <string name="email_gpxbody">附加的是一個在 GPS 交換格式(GPX)檔案中的路線，該格式的描述見：http：//www。topografix。com/gpx。asp</string>
+    <string name="email_kmzbody">附加的是一個在 KMZ 格式檔案中的路線，該格式的描述見：http：//code。google。com/apis/kml/documentation/kml_tut。html</string>
+    <string name="kmlVideoUnsupported">不支援視頻嵌入，請使用一個zip工具來從這個KMZ檔案中獲取視頻檔案 %s。</string>
+    <string name="kmlAudioUnsupported">不支援音頻嵌入，請使用一個zip工具來從這個KMZ檔案中獲取音頻檔案 %s。</string>
+    
+    <!-- Screens -->
+    <string name="share_track">分這個路線</string>
+    <string name="share_explained">分享建立一個匯出了包含盡可能多的路線記錄資料。</string>
+    <string name="share_type">選取要分享的路線的名字：</string>
+    <string name="share_name">匯出名：</string>
+    <string name="share_target">分享的方法：</string>
+    <string name="sender_chooser">選取傳送程式</string>
+    <string name="opengpstracker_title">開放式 GPS 追蹤器</string>
+    <string name="opengpstracker_settings">設定</string>
+    <string name="preference_display">顯示設定</string>
+    <string name="preference_behavior">執行設定</string>
+    <string name="logatstartup">在啟動時記錄</string>
+    <string name="logatstartup_summary">在程式啟動後立即開始日誌服務進行記錄。</string>   
+    <string name="startupatboot">開機啟動</string>
+    <string name="startupatboot_summary">在設備啟動後，開啟日誌服務。</string>   
+    <string name="disableblanking_title">禁止關屏</string>
+    <string name="disableblanking_summary">追蹤時保持屏幕開啟。</string>       
+    <string name="precision_title">記錄精度</string>
+    <string name="precision_summary">GPS 記錄點之間的間隔大小。</string>      
+    <string name="mapprovider_title">地圖提供器</string>
+    <string name="mapprovider_summary">要檢索地圖資料的源。</string>      
+    <string name="trackcoloring_title">路線顏色</string>
+    <string name="trackcoloring_summary">繪製路線使用的顏色。</string>
+    <string name="showsatellite_title">衛星圖像</string>
+    <string name="showsatellite_summary">顯示谷歌地圖衛星檢視</string>
+    <string name="showtraffic_title">交通</string>
+    <string name="showtraffic_summary">顯示谷歌地圖交通訊息</string>
+    <string name="showspeed_title">GPS 速度</string>
+    <string name="showspeed_summary">顯示來自最後收到的 GPS 固定的速度。</string>
+    <string name="showaltitude_title">GPS 海拔</string>
+    <string name="showaltitude_summary">顯示最後一次收到的 GPS 修正中的海拔。</string>
+    <string name="showcompass_title">指南針</string>
+    <string name="showcompass_summary">顯示指標指向北的指南針</string>
+    <string name="sanitycheck_title">速度和海拔完整性檢查</string>
+    <string name="sanitycheck_summary">僅接收合理的 GPS 速度和海拔</string>
+    <string name="showlocation_title">我的位置</string>
+    <string name="showlocation_summary">在地圖上顯示我的位置</string>
+    <string name="units_title">單位</string>
+    <string name="units_summary">決定使用的單位是公制還是英制</string>
+    <string name="stat_title">統計 - %s</string>
+    <string name="stat_maximumspeed">最高速度</string>
+    <string name="stat_maximumaltitude">最高海拔</string>
+    <string name="stat_minimalaltitide">最低海拔</string>
+    <string name="stat_overallaveragespeed">總平均速度</string>
+    <string name="stat_averagespeed">平均速度</string>    
+    <string name="stat_distance">路線距離</string>    
+    <string name="stat_endtime">上次時間</string>    
+    <string name="stat_starttime">開始時間</string>    
+    <string name="stat_trackname">路線名稱</string>
+    <string name="stat_waypoints">路點數量</string>
+    <string name="track_list">路線</string>
+    <string name="search_label">路線</string>
+    <string name="search_description">開放式 GPS 追蹤器的路線名</string>
+    <string name="search_hint">搜索路線</string>
+    <string name="preference_sharing">分享設定</string>
+    <string name="jogmap_title">jogmap 上傳代碼</string>
+    <string name="jogmap_summary">此驗證碼用來上到到一個 jogmap.de 賬戶</string>
+    <string name="jogmap_failed">上傳路線到 jogmap.de 失敗：</string>
+    <string name="jogmap_success">上傳路線到 jogmap.de 成功：</string>
+    <string name="jogrunner_message">請輸入從 http://www.jogmap.de/civic4/?q=mobilinfo 獲得的 Zugangskey。</string>
+    <string name="import_track">匯入一個路線到開放式 GPS 追蹤器中</string>
+    <string name="preference_logging">日誌和 GPS 使用設定</string>
+    <string name="customprecisiontime_title">目標陸點的時間間隔，以分鐘計</string>
+    <string name="customprecisiontime_summary">在路點之間，GPS 接收器應該休眠的時間。</string>
+    <string name="customprecisiondistance_title">目標路點的距離，以米計</string>
+    <string name="customprecisiondistance_summary">路點之間應該覆寫的距離。</string>
+    <string name="gpsstatusmonitor_title">監視 GPS 狀態</string>
+    <string name="gpsstatusmonitor_summary">顯示正在使用的衛星的個數。</string>
+	<string name="osmusername_title">OpenStreetMap 使用者名</string>
+	<string name="osmusername_summary">使用者名建立於 http://www.openstreetmap.org/user/new</string>
+	<string name="osmusername_message">OpenStreetMap賬戶允許你開始編輯地圖的資料來為地圖做出貢獻。開放式 GPS 追蹤器將使用它來更新 GPS 資料。</string>
+	<string name="osmpassword_title">OpenStreetMap 密碼</string>
+	<string name="osmpassword_summary">適用於 http://www.openstreetmap.org/user/new 的密碼</string>
+	<string name="osmpassword_message">此密碼將用於 openstreetmap.org  伺服器的 HTTP 和基本驗證。</string>
+	<string name="osmvisibility_title">openstreetmap.org 上的 GPS 路線公共可見度</string>
+	<string name="osmvisibility_summary">請查閱 openstreetmap.org 的維基以瞭解更多關於可見度等級的訊息。</string>
+    <string name="osm_success">已成功上傳路線到 www.openstreetmap.org：</string>
+    <string name="osm_failed">上傳路線到 www.openstreetmap.org 失敗：</string>
+    <string name="sddirectory_title">使用 SD 卡資料夾來儲存分享路線。</string>
+    <string name="sddirectory_summary">建立的路線和媒體檔案將儲存在 SD 卡資料夾中。</string>
+    <string name="sddirectory_message">輸入檔案要使用的 SD 路徑。預設的實例 /OpenGPSTracker/ 將會新增一個單獨的資料夾到 SD 卡中，同時建立/Apps/OpenGPSTracker/。</string>
+    
+<!-- ***************************
+   About information
+   ***************************-->
+   <string name="about_comments">通過 GPS， 程式可以記錄你設備的移動。</string>
+   <string name="about_activity_name_extended">關於 %s</string>
+   <string name="no_information_available">沒有可用的訊息。</string>
+   
+</resources>

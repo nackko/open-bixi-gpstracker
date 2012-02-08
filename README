@@ -1,1 +1,9 @@
 This file was created by IntelliJ IDEA 11.0.2 for binding GitHub repository
+
+This project is a first iteration on a custom made gpx exporter for the next Bixi season
+I intend to be able to store the data I'll generate in gpx files, using extensions to add data specific to this project
+
+To be able to run, or maybe even compile, you'll have to move the   DUMMYdonottranslate_private.xml file from
+res/values-v1 to res/values, renaming it private.xml and filling it with your own keys.
+
+Also, you have to input your Google map API key in the layout/map.xml file that matches your signing certificate

@@ -32,7 +32,21 @@
             android:id="@+id/originReasonSpinner"
             android:layout_height="wrap_content"
             android:layout_width="fill_parent" />
-
+    <TextView
+            android:id="@+id/TextView3"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/originReasonSpinner"
+            android:text="@string/BixiTrack_EndReason"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    <!--android:text="@string/share_type"-->
+    <Spinner
+            android:prompt="@string/BixiTrack_EndReason"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/TextView3"
+            android:id="@+id/destinationReasonSpinner"
+            android:layout_height="wrap_content"
+            android:layout_width="fill_parent" />
     <!--android:layout_below="@+id/TextView2"-->
 
 

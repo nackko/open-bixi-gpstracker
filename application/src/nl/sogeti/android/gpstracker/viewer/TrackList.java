@@ -101,8 +101,9 @@ public class TrackList extends ListActivity implements ProgressListener
     //f8f_change
     private CheckBox mTrackHelmetView;
    private Spinner mOriginReasonSpinner;
+    private Spinner mDestinationReasonSpinner;
 
-    private ArrayAdapter<CharSequence> mOriginReasonAdapter;
+    private ArrayAdapter<CharSequence> mReasonAdapter;
 
     //private static final int REASON_HOME = 0;
     //private static final int REASON_WORK = 1;
@@ -151,6 +152,10 @@ public class TrackList extends ListActivity implements ProgressListener
           String startReason = mOriginReasonSpinner.getSelectedItem().toString();
           
           values.put(Tracks.START_REASON, startReason);
+          
+          String endReason = mDestinationReasonSpinner.getSelectedItem().toString();
+
+          values.put(Tracks.END_REASON, endReason);
 
               
          TrackList.this.getContentResolver().update(mDialogUri, values, null, null);
@@ -489,10 +494,12 @@ public class TrackList extends ListActivity implements ProgressListener
             mTrackNameView = (EditText) view.findViewById(R.id.nameField);
             mTrackHelmetView = (CheckBox) view.findViewById(R.id.helmetCheck);
             mOriginReasonSpinner = (Spinner) view.findViewById(R.id.originReasonSpinner);
-             mOriginReasonAdapter = ArrayAdapter.createFromResource(this, R.array.Reason_choices, android.R.layout.simple_spinner_item);
-             mOriginReasonAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+             mDestinationReasonSpinner = (Spinner) view.findViewById(R.id.destinationReasonSpinner);
+             mReasonAdapter = ArrayAdapter.createFromResource(this, R.array.Reason_choices, android.R.layout.simple_spinner_item);
+             mReasonAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-             mOriginReasonSpinner.setAdapter(mOriginReasonAdapter);
+             mOriginReasonSpinner.setAdapter(mReasonAdapter);
+             mDestinationReasonSpinner.setAdapter(mReasonAdapter);
 
              mOriginReasonSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
              {
@@ -507,6 +514,19 @@ public class TrackList extends ListActivity implements ProgressListener
                  { /* NOOP */
                  }
              });
+//             mDestinationReasonSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+//             {
+//                 //          public void onItemSelected(AdapterView<?> parent,
+////                                     View view, int pos, long id) {
+//                 public void onItemSelected(AdapterView< ? > arg0, View arg1, int position, long arg3)
+//                 {
+//                     //adjustTargetToType(position);
+//                 }
+//
+//                 public void onNothingSelected(AdapterView< ? > arg0)
+//                 { /* NOOP */
+//                 }
+//             });
 
 
             builder = new AlertDialog.Builder(this).setTitle(R.string.dialog_routename_title).setMessage(R.string.dialog_routename_message)
@@ -570,7 +590,8 @@ public class TrackList extends ListActivity implements ProgressListener
              //I need to setup data such as dialog reflects database content
              //I have the track URI so damn fucking fuck I'll get that row
              Cursor trackCursor = null;
-             trackCursor = TrackList.this.getContentResolver().query(mDialogUri, new String[] { Tracks._ID, Tracks.WITH_HELMET, Tracks.START_REASON}, null, null,null);
+             //trackCursor = TrackList.this.getContentResolver().query(mDialogUri, new String[] { Tracks._ID, Tracks.WITH_HELMET, Tracks.START_REASON}, null, null,null);
+             trackCursor = TrackList.this.getContentResolver().query(mDialogUri, null, null, null,null);
 
              //This should always contains at most 1 row, given we request for a particular track ID
              if (trackCursor.moveToFirst())
@@ -592,9 +613,15 @@ public class TrackList extends ListActivity implements ProgressListener
                  
                  int startReasonIdx = trackCursor.getColumnIndex(Tracks.START_REASON);
                  String startReason = trackCursor.getString(startReasonIdx);
-                 
+
                  //beurk !
-                 mOriginReasonSpinner.setSelection(mOriginReasonAdapter.getPosition(startReason));
+                 mOriginReasonSpinner.setSelection(mReasonAdapter.getPosition(startReason));
+
+                 int endReasonIdx = trackCursor.getColumnIndex(Tracks.END_REASON);
+                 String endReason = trackCursor.getString(endReasonIdx);
+
+                 //beurk !
+                 mDestinationReasonSpinner.setSelection(mReasonAdapter.getPosition(endReason));
              }
 
              //TODO: Retrieve stuff from the database to link the dialog state to data

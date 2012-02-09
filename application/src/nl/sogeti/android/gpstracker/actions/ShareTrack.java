@@ -155,10 +155,14 @@ public class ShareTrack extends Activity implements StatisticsDelegate
       shareTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
       mShareTypeSpinner.setAdapter(shareTypeAdapter);
       mShareTargetSpinner = (Spinner) findViewById(R.id.shareTargetSpinner);
+       //ArrayAdapter creation and setup is deferred depending on share type selection, see set*ExportTargets methods family
       mShareTargetSpinner.setOnItemSelectedListener(new OnItemSelectedListener()
       {
+//          public void onItemSelected(AdapterView<?> parent,
+//                                     View view, int pos, long id) {
          public void onItemSelected(AdapterView< ? > arg0, View arg1, int position, long arg3)
          {
+             //OK, there are two objects at play, first it checks the other spinner 'ShareType', then it checks itself 'ShareTarget' with variable position
             if (mShareTypeSpinner.getSelectedItemPosition() == EXPORT_TYPE_GPX && position == EXPORT_TARGET_BREADCRUMBS)
             {
                BreadcrumbsAdapter breadcrumbAdapter = new BreadcrumbsAdapter(ShareTrack.this, null);
@@ -326,6 +330,7 @@ public class ShareTrack extends Activity implements StatisticsDelegate
    {
       String chosenFileName = mFileNameView.getText().toString();
       String textLine = mTweetView.getText().toString();
+       //Because code knows layout in advance (ie : in which order selection will be presented in the spinner)
       int type = (int) mShareTypeSpinner.getSelectedItemId();
       int target = (int) mShareTargetSpinner.getSelectedItemId();
 

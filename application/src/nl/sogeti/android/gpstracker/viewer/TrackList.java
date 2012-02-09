@@ -28,6 +28,7 @@
  */
 package nl.sogeti.android.gpstracker.viewer;
 
+import android.widget.*;
 import nl.sogeti.android.gpstracker.R;
 import nl.sogeti.android.gpstracker.actions.DescribeTrack;
 import nl.sogeti.android.gpstracker.actions.Statistics;
@@ -63,15 +64,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
-import android.widget.AdapterView;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.ProgressBar;
-import android.widget.SimpleCursorAdapter;
-import android.widget.TextView;
 
 /**
  * Show a list view of all tracks, also doubles for showing search results
@@ -104,8 +97,18 @@ public class TrackList extends ListActivity implements ProgressListener
    private static final int DESCRIBE = Menu.FIRST + 30;
 
    private BreadcrumbsAdapter mBreadcrumbAdapter;
-   private EditText mTrackNameView;
-   private CheckBox mTrackHelmetView;
+   private EditText mTrackNameView;     //See how it relates to NameTrack.mTrackNameView
+    //f8f_change
+    private CheckBox mTrackHelmetView;
+   private Spinner mOriginReasonSpinner;
+
+    private ArrayAdapter<CharSequence> mOriginReasonAdapter;
+
+    //private static final int REASON_HOME = 0;
+    //private static final int REASON_WORK = 1;
+    //private static final int REASON_ELSE = 2;
+    //private static final int REASON_DESCRIBE = 3;
+    //f8f_end
 
    private Uri mDialogUri;
    private String mDialogCurrentName = "";
@@ -129,8 +132,11 @@ public class TrackList extends ListActivity implements ProgressListener
 
           //TODO: Input code somewhere around to have a correct rename dialog
 
+          ContentValues values = new ContentValues();
+
          String trackName = mTrackNameView.getText().toString();
-         ContentValues values = new ContentValues();
+                   // This is where data is retrieved from the interface to be passed on to the provider (through the resolver)
+          //Note : the relationship with NameTrack activity is not clear at the moment 08/02/12
          values.put(Tracks.NAME, trackName);
 
           if (mTrackHelmetView.isChecked())
@@ -141,6 +147,11 @@ public class TrackList extends ListActivity implements ProgressListener
           {
               values.put(Tracks.WITH_HELMET, "0");
           }
+
+          String startReason = mOriginReasonSpinner.getSelectedItem().toString();
+          
+          values.put(Tracks.START_REASON, startReason);
+
               
          TrackList.this.getContentResolver().update(mDialogUri, values, null, null);
       }
@@ -437,6 +448,7 @@ public class TrackList extends ListActivity implements ProgressListener
             case MENU_RENAME:
             {
                 //TODO : move this into it's own Intent like share ?
+                //Note : this is the long press menu on the track
 
 
                showDialog(DIALOG_RENAME);
@@ -471,10 +483,32 @@ public class TrackList extends ListActivity implements ProgressListener
       switch (id)
       {
          case DIALOG_RENAME:
+             //Code to create the 'rename dialog' which now includes additional data for Bixi tracking
             LayoutInflater factory = LayoutInflater.from(this);
             View view = factory.inflate(R.layout.namedialog, null);
             mTrackNameView = (EditText) view.findViewById(R.id.nameField);
             mTrackHelmetView = (CheckBox) view.findViewById(R.id.helmetCheck);
+            mOriginReasonSpinner = (Spinner) view.findViewById(R.id.originReasonSpinner);
+             mOriginReasonAdapter = ArrayAdapter.createFromResource(this, R.array.Reason_choices, android.R.layout.simple_spinner_item);
+             mOriginReasonAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+             mOriginReasonSpinner.setAdapter(mOriginReasonAdapter);
+
+             mOriginReasonSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+             {
+                 //          public void onItemSelected(AdapterView<?> parent,
+//                                     View view, int pos, long id) {
+                 public void onItemSelected(AdapterView< ? > arg0, View arg1, int position, long arg3)
+                 {
+                     //adjustTargetToType(position);
+                 }
+
+                 public void onNothingSelected(AdapterView< ? > arg0)
+                 { /* NOOP */
+                 }
+             });
+
+
             builder = new AlertDialog.Builder(this).setTitle(R.string.dialog_routename_title).setMessage(R.string.dialog_routename_message)
                   .setIcon(android.R.drawable.ic_dialog_alert).setPositiveButton(R.string.btn_okay, mRenameOnClickListener)
                   .setNegativeButton(R.string.btn_cancel, null).setView(view);
@@ -536,8 +570,9 @@ public class TrackList extends ListActivity implements ProgressListener
              //I need to setup data such as dialog reflects database content
              //I have the track URI so damn fucking fuck I'll get that row
              Cursor trackCursor = null;
-             trackCursor = TrackList.this.getContentResolver().query(mDialogUri, new String[] { Tracks._ID, Tracks.WITH_HELMET }, null, null,null);
+             trackCursor = TrackList.this.getContentResolver().query(mDialogUri, new String[] { Tracks._ID, Tracks.WITH_HELMET, Tracks.START_REASON}, null, null,null);
 
+             //This should always contains at most 1 row, given we request for a particular track ID
              if (trackCursor.moveToFirst())
              {
                  int helmetIdx = trackCursor.getColumnIndex(Tracks.WITH_HELMET);
@@ -554,6 +589,12 @@ public class TrackList extends ListActivity implements ProgressListener
                  {
                      mTrackHelmetView.setChecked(false);
                  }
+                 
+                 int startReasonIdx = trackCursor.getColumnIndex(Tracks.START_REASON);
+                 String startReason = trackCursor.getString(startReasonIdx);
+                 
+                 //beurk !
+                 mOriginReasonSpinner.setSelection(mOriginReasonAdapter.getPosition(startReason));
              }
 
              //TODO: Retrieve stuff from the database to link the dialog state to data

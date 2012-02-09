@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="CONSUMER_KEY">YOURKEY</string>
-    <string name="CONSUMER_SECRET">YOURSECRET</string>
+    <!--<string name="CONSUMER_KEY">YOURKEY</string>-->
+    <!--<string name="CONSUMER_SECRET">YOURSECRET</string>-->
 
-    <string name="OSM_CONSUMER_KEY">YOUROSMKEY</string>
-    <string name="OSM_CONSUMER_SECRET">YOUROSMSECRET</string>
+    <!--<string name="OSM_CONSUMER_KEY">YOUROSMKEY</string>-->
+    <!--<string name="OSM_CONSUMER_SECRET">YOUROSMSECRET</string>-->
 </resources>

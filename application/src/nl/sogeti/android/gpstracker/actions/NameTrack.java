@@ -30,6 +30,7 @@ package nl.sogeti.android.gpstracker.actions;
 
 import java.util.Calendar;
 
+import android.widget.CheckBox;
 import nl.sogeti.android.gpstracker.R;
 import nl.sogeti.android.gpstracker.db.GPStracking.Tracks;
 import android.app.Activity;
@@ -64,6 +65,11 @@ public class NameTrack extends Activity
    protected static final String TAG = "OGT.NameTrack";
 
    private EditText mTrackNameView;
+    //I was about to move all my added stuff from trackList activity to here but somehow breakpoints on those
+    //query() calls seem to never be hit, I have to investigate as I'll quickly pollute TrackList activity with
+    //'naming' GUI elements.
+    //TODO: see relationship between NameTrack&TrackList activities. Refactor elements from up there to down here
+   //private CheckBox mTrackHelmetView;
    private boolean paused;
    Uri mTrackUri;
 
@@ -132,6 +138,7 @@ public class NameTrack extends Activity
    protected void onCreate( Bundle savedInstanceState )
    {
       super.onCreate( savedInstanceState );
+       //This activity hides itself, the TrackList activity switches it's visible state
       this.setVisible( false );
       paused = false;
       mTrackUri = this.getIntent().getData();

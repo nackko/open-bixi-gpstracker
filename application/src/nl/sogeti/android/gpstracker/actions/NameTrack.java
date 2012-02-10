@@ -30,7 +30,8 @@ package nl.sogeti.android.gpstracker.actions;
 
 import java.util.Calendar;
 
-import android.widget.CheckBox;
+import android.database.Cursor;
+import android.widget.*;
 import nl.sogeti.android.gpstracker.R;
 import nl.sogeti.android.gpstracker.db.GPStracking.Tracks;
 import android.app.Activity;
@@ -50,7 +51,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.EditText;
 
 /**
  * Empty Activity that pops up the dialog to name the track
@@ -65,11 +65,20 @@ public class NameTrack extends Activity
    protected static final String TAG = "OGT.NameTrack";
 
    private EditText mTrackNameView;
-    //I was about to move all my added stuff from trackList activity to here but somehow breakpoints on those
-    //query() calls seem to never be hit, I have to investigate as I'll quickly pollute TrackList activity with
-    //'naming' GUI elements.
-    //TODO: see relationship between NameTrack&TrackList activities. Refactor elements from up there to down here
-   //private CheckBox mTrackHelmetView;
+   //F8F BEGIN
+   private CheckBox mTrackHelmetView;
+   private Spinner mOriginReasonSpinner;
+   private Spinner mDestinationReasonSpinner;
+
+   private ArrayAdapter<CharSequence> mReasonAdapter;
+
+    private RatingBar mServiceRatingBar;
+
+   private AutoCompleteTextView mStartStationAutoCompleteTextView;
+    private AutoCompleteTextView mEndStationAutoCompleteTextView;
+   private ArrayAdapter<String> mStationAdapter;
+    //F8F END
+
    private boolean paused;
    Uri mTrackUri;
 
@@ -77,14 +86,10 @@ public class NameTrack extends Activity
    {
       public void onClick( DialogInterface dialog, int which )
       {
-         String trackName = null;
          switch( which )
          {
             case DialogInterface.BUTTON_POSITIVE:
-               trackName = mTrackNameView.getText().toString();        
-               ContentValues values = new ContentValues();
-               values.put( Tracks.NAME, trackName );
-               getContentResolver().update( mTrackUri, values, null, null );
+                updateTrack();
                clearNotification();
                break;
             case DialogInterface.BUTTON_NEUTRAL:
@@ -102,6 +107,48 @@ public class NameTrack extends Activity
 
 
    };
+
+    private void updateTrack()
+    {
+        String trackName = null;
+        trackName = mTrackNameView.getText().toString();
+        ContentValues values = new ContentValues();
+        values.put( Tracks.NAME, trackName );
+
+
+        if (mTrackHelmetView.isChecked())
+        {
+            values.put(Tracks.WITH_HELMET, "1");
+        }
+        else
+        {
+            values.put(Tracks.WITH_HELMET, "0");
+        }
+
+        String startReason = mOriginReasonSpinner.getSelectedItem().toString();
+
+        values.put(Tracks.START_REASON, startReason);
+
+        String endReason = mDestinationReasonSpinner.getSelectedItem().toString();
+
+        values.put(Tracks.END_REASON, endReason);
+
+        if (mServiceRatingBar.getRating() > 0)
+            // 0 = unrated track, minimum valid rating being 1
+        {
+            values.put(Tracks.SERVICE_RATING, (int)mServiceRatingBar.getRating());
+        }
+        
+        values.put(Tracks.START_STATION_NAME, mStartStationAutoCompleteTextView.getText().toString());
+        values.put(Tracks.END_STATION_NAME, mEndStationAutoCompleteTextView.getText().toString());
+        
+
+
+
+
+        getContentResolver().update( mTrackUri, values, null, null );
+
+    }
    
    
    private void clearNotification()
@@ -184,9 +231,56 @@ public class NameTrack extends Activity
             factory = LayoutInflater.from( this );
             view = factory.inflate( R.layout.namedialog, null );
             mTrackNameView = (EditText) view.findViewById( R.id.nameField );
+             mTrackHelmetView = (CheckBox) view.findViewById(R.id.helmetCheck);
+             mServiceRatingBar = (RatingBar) view.findViewById(R.id.serviceRatingBar);
+             mOriginReasonSpinner = (Spinner) view.findViewById(R.id.originReasonSpinner);
+             mDestinationReasonSpinner = (Spinner) view.findViewById(R.id.destinationReasonSpinner);
+             mReasonAdapter = ArrayAdapter.createFromResource(this, R.array.Reason_choices, android.R.layout.simple_spinner_item);
+             mReasonAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+             mOriginReasonSpinner.setAdapter(mReasonAdapter);
+             mDestinationReasonSpinner.setAdapter(mReasonAdapter);
+
+             mOriginReasonSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+             {
+                 //          public void onItemSelected(AdapterView<?> parent,
+//                                     View view, int pos, long id) {
+                 public void onItemSelected(AdapterView< ? > arg0, View arg1, int position, long arg3)
+                 {
+                     //adjustTargetToType(position);
+                 }
+
+                 public void onNothingSelected(AdapterView< ? > arg0)
+                 { /* NOOP */
+                 }
+             });
+//             mDestinationReasonSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+//             {
+//                 //          public void onItemSelected(AdapterView<?> parent,
+////                                     View view, int pos, long id) {
+//                 public void onItemSelected(AdapterView< ? > arg0, View arg1, int position, long arg3)
+//                 {
+//                     //adjustTargetToType(position);
+//                 }
+//
+//                 public void onNothingSelected(AdapterView< ? > arg0)
+//                 { /* NOOP */
+//                 }
+//             });
+
+             mStartStationAutoCompleteTextView = (AutoCompleteTextView) view.findViewById(R.id.startStationAutocomplete);
+
+             String[] stationsNames = getResources().getStringArray(R.array.Stations_names);
+             //mStationAdapter = ArrayAdapter.createFromResource(this, R.array.Stations_names, android.R.layout.simple_list_item_1);
+             mStationAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, stationsNames);
+             mStartStationAutoCompleteTextView.setAdapter(mStationAdapter);
+
+             mEndStationAutoCompleteTextView = (AutoCompleteTextView) view.findViewById(R.id.endStationAutocomplete);
+             mEndStationAutoCompleteTextView.setAdapter(mStationAdapter);
+
             builder
                .setTitle( R.string.dialog_routename_title )
-               .setMessage( R.string.dialog_routename_message )
+               //.setMessage( R.string.dialog_routename_message )
                .setIcon( android.R.drawable.ic_dialog_alert )
                .setPositiveButton( R.string.btn_okay, mTrackNameDialogListener )
                .setNeutralButton( R.string.btn_skip, mTrackNameDialogListener )
@@ -215,11 +309,75 @@ public class NameTrack extends Activity
       switch (id)
       {
          case DIALOG_TRACKNAME:
-            String trackName;
-            Calendar c = Calendar.getInstance();
-            trackName = String.format( getString( R.string.dialog_routename_default ), c, c, c, c, c );
-            mTrackNameView.setText( trackName );
-            mTrackNameView.setSelection( 0, trackName.length() );
+            //String trackName;
+
+
+             //I need to setup data such as dialog reflects database content
+             //I have the track URI so damn fucking fuck I'll get that row
+             Cursor trackCursor = null;
+             //trackCursor = TrackList.this.getContentResolver().query(mDialogUri, new String[] { Tracks._ID, Tracks.WITH_HELMET, Tracks.START_REASON}, null, null,null);
+             trackCursor = getContentResolver().query(mTrackUri, null, null, null,null);
+
+             //This should always contains at most 1 row, given we request for a particular track ID
+             if (trackCursor.moveToFirst())
+             {
+                 String trackName = trackCursor.getString(trackCursor.getColumnIndex(Tracks.NAME));
+                 if (trackName == null || trackName.isEmpty())
+                 {
+                     Calendar c = Calendar.getInstance();
+                     trackName = String.format( getString( R.string.dialog_routename_default ), c, c, c, c, c );
+                 }
+
+                 mTrackNameView.setText( trackName );
+                 mTrackNameView.setSelection( 0, trackName.length() );
+
+                 int helmetIdx = trackCursor.getColumnIndex(Tracks.WITH_HELMET);
+                 boolean isnull = trackCursor.isNull(helmetIdx);
+
+                 int helmetValue = trackCursor.getInt(helmetIdx);
+
+                 //if (trackCursor.getInt(trackCursor.getColumnIndex(Tracks.WITH_HELMET)) == 1)
+                 if (helmetValue == 1)
+                 {
+                     mTrackHelmetView.setChecked(true);
+                 }
+                 else
+                 {
+                     mTrackHelmetView.setChecked(false);
+                 }
+
+                 int startReasonIdx = trackCursor.getColumnIndex(Tracks.START_REASON);
+                 String startReason = trackCursor.getString(startReasonIdx);
+
+                 //beurk !
+                 mOriginReasonSpinner.setSelection(mReasonAdapter.getPosition(startReason));
+
+                 int endReasonIdx = trackCursor.getColumnIndex(Tracks.END_REASON);
+                 String endReason = trackCursor.getString(endReasonIdx);
+
+                 //beurk !
+                 mDestinationReasonSpinner.setSelection(mReasonAdapter.getPosition(endReason));
+                 
+                 mServiceRatingBar.setRating(trackCursor.getInt(trackCursor.getColumnIndex(Tracks.SERVICE_RATING)));
+                 
+                 String startStationName = trackCursor.getString(trackCursor.getColumnIndex(Tracks.START_STATION_NAME));
+                 if (startStationName == null)
+                 {
+                     startStationName = "";
+                 }
+                 mStartStationAutoCompleteTextView.setText(startStationName);
+
+                 String endStationName = trackCursor.getString(trackCursor.getColumnIndex(Tracks.END_STATION_NAME));
+                 if (endStationName == null)
+                 {
+                     endStationName = "";
+                 }
+                 mEndStationAutoCompleteTextView.setText(endStationName);
+             }
+
+             //TODO: Retrieve stuff from the database to link the dialog state to data
+             //Check hos this is done in the track lst view for example
+             trackCursor.close();
             break;
          default:
             super.onPrepareDialog( id, dialog );

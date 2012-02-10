@@ -16,25 +16,26 @@ public final class R {
     }
     public static final class array {
         public static final int Reason_choices=0x7f07000a;
-        public static final int about_artists=0x7f070013;
-        public static final int about_authors=0x7f070011;
-        public static final int about_documenters=0x7f070012;
-        public static final int about_translators=0x7f07000b;
+        public static final int Stations_names=0x7f07000b;
+        public static final int about_artists=0x7f070014;
+        public static final int about_authors=0x7f070012;
+        public static final int about_documenters=0x7f070013;
+        public static final int about_translators=0x7f07000c;
         public static final int mapprovider_choices=0x7f070002;
-        public static final int mapprovider_values=0x7f07000d;
+        public static final int mapprovider_values=0x7f07000e;
         public static final int osmvisibility_choices=0x7f070009;
-        public static final int osmvisibility_values=0x7f070010;
+        public static final int osmvisibility_values=0x7f070011;
         public static final int precision_choices=0x7f070001;
-        public static final int precision_values=0x7f07000c;
+        public static final int precision_values=0x7f07000d;
         public static final int sharegpxtarget_choices=0x7f070006;
         public static final int sharekmztarget_choices=0x7f070007;
         public static final int sharetexttarget_choices=0x7f070008;
         public static final int sharetype_choices=0x7f070005;
         public static final int state_choices=0x7f070000;
         public static final int trackcoloring_choices=0x7f070003;
-        public static final int trackcoloring_values=0x7f07000e;
+        public static final int trackcoloring_values=0x7f07000f;
         public static final int units_choices=0x7f070004;
-        public static final int units_values=0x7f07000f;
+        public static final int units_values=0x7f070010;
     }
     public static final class attr {
     }
@@ -67,43 +68,46 @@ public final class R {
         public static final int stip2=0x7f020019;
     }
     public static final class id {
+        public static final int EndStationText=0x7f0a0046;
+        public static final int F8FLinearLayout1=0x7f0a003b;
         public static final int LinearLayout01=0x7f0a003a;
-        public static final int LinearLayout1=0x7f0a0049;
+        public static final int LinearLayout1=0x7f0a0050;
         public static final int RelativeLayout1=0x7f0a0008;
-        public static final int TextView1=0x7f0a004a;
-        public static final int TextView2=0x7f0a003d;
-        public static final int TextView3=0x7f0a003f;
-        public static final int TextView4=0x7f0a004d;
+        public static final int TextView1=0x7f0a0051;
+        public static final int TextView2=0x7f0a003e;
+        public static final int TextView3=0x7f0a0040;
+        public static final int TextView4=0x7f0a0042;
         public static final int activity=0x7f0a0009;
-        public static final int bcExportProgress=0x7f0a0064;
-        public static final int bcSyncedCheckBox=0x7f0a0063;
+        public static final int bcExportProgress=0x7f0a006a;
+        public static final int bcSyncedCheckBox=0x7f0a0069;
         public static final int bundle=0x7f0a000b;
-        public static final int cancelshare_button=0x7f0a0053;
-        public static final int closeImageView=0x7f0a0052;
+        public static final int cancelshare_button=0x7f0a0059;
+        public static final int closeImageView=0x7f0a0058;
         public static final int contrib_view=0x7f0a0004;
         public static final int currentAltitude=0x7f0a0030;
         public static final int currentDistance=0x7f0a0031;
         public static final int currentSpeed=0x7f0a002f;
         public static final int description=0x7f0a000c;
-        public static final int destinationReasonSpinner=0x7f0a0040;
-        public static final int detail=0x7f0a0044;
-        public static final int fileNameField=0x7f0a004e;
-        public static final int flipper=0x7f0a005e;
+        public static final int destinationReasonSpinner=0x7f0a0041;
+        public static final int detail=0x7f0a004b;
+        public static final int endStationAutocomplete=0x7f0a0047;
+        public static final int fileNameField=0x7f0a0054;
+        public static final int flipper=0x7f0a0064;
         public static final int from_textview=0x7f0a0002;
         public static final int gallery=0x7f0a0039;
         public static final int google_backgrounds=0x7f0a0019;
         public static final int google_overlays=0x7f0a0026;
-        public static final int graph_distancealtitude=0x7f0a0062;
-        public static final int graph_distancespeed=0x7f0a0060;
-        public static final int graph_timealtitude=0x7f0a0061;
-        public static final int graph_timespeed=0x7f0a005f;
+        public static final int graph_distancealtitude=0x7f0a0068;
+        public static final int graph_distancespeed=0x7f0a0066;
+        public static final int graph_timealtitude=0x7f0a0067;
+        public static final int graph_timespeed=0x7f0a0065;
         public static final int graphtype_distancealtitude=0x7f0a0013;
         public static final int graphtype_distancespeed=0x7f0a0011;
         public static final int graphtype_timealtitude=0x7f0a0012;
         public static final int graphtype_timespeed=0x7f0a0010;
-        public static final int helmetCheck=0x7f0a003c;
-        public static final int icon=0x7f0a0046;
-        public static final int imageView=0x7f0a0051;
+        public static final int helmetCheck=0x7f0a003d;
+        public static final int icon=0x7f0a004d;
+        public static final int imageView=0x7f0a0057;
         public static final int layer_altitude=0x7f0a0022;
         public static final int layer_compass=0x7f0a0024;
         public static final int layer_distance=0x7f0a0023;
@@ -117,7 +121,7 @@ public final class R {
         public static final int layer_traffic=0x7f0a0027;
         public static final int listitem_from=0x7f0a0003;
         public static final int listitem_name=0x7f0a0000;
-        public static final int loading=0x7f0a0045;
+        public static final int loading=0x7f0a004c;
         public static final int logcontrol_pause=0x7f0a0029;
         public static final int logcontrol_resume=0x7f0a002a;
         public static final int logcontrol_start=0x7f0a0028;
@@ -125,24 +129,25 @@ public final class R {
         public static final int mapScreen=0x7f0a002c;
         public static final int myMapView=0x7f0a002d;
         public static final int myOsmMapView=0x7f0a002e;
-        public static final int nameField=0x7f0a003b;
+        public static final int nameField=0x7f0a003c;
         public static final int noteinsert_name=0x7f0a0014;
         public static final int noteinsert_picture=0x7f0a0017;
         public static final int noteinsert_text=0x7f0a0015;
         public static final int noteinsert_video=0x7f0a0018;
         public static final int noteinsert_voice=0x7f0a0016;
-        public static final int notename=0x7f0a0041;
-        public static final int notetext=0x7f0a0042;
-        public static final int okayshare_button=0x7f0a0054;
-        public static final int originReasonSpinner=0x7f0a003e;
+        public static final int notename=0x7f0a0048;
+        public static final int notetext=0x7f0a0049;
+        public static final int okayshare_button=0x7f0a005a;
+        public static final int originReasonSpinner=0x7f0a003f;
         public static final int osm_backgrounds=0x7f0a001c;
-        public static final int progress=0x7f0a0047;
-        public static final int progressBar1=0x7f0a0043;
+        public static final int progress=0x7f0a004e;
+        public static final int progressBar1=0x7f0a004a;
         public static final int progressSpinner=0x7f0a000e;
-        public static final int progresstext=0x7f0a0048;
+        public static final int progresstext=0x7f0a004f;
         public static final int public_checkbox=0x7f0a000d;
-        public static final int shareTargetSpinner=0x7f0a004c;
-        public static final int shareTypeSpinner=0x7f0a004b;
+        public static final int serviceRatingBar=0x7f0a0043;
+        public static final int shareTargetSpinner=0x7f0a0053;
+        public static final int shareTypeSpinner=0x7f0a0052;
         public static final int shared_layers=0x7f0a0020;
         public static final int speedbar=0x7f0a0038;
         public static final int speedview00=0x7f0a0032;
@@ -151,20 +156,22 @@ public final class R {
         public static final int speedview03=0x7f0a0035;
         public static final int speedview04=0x7f0a0036;
         public static final int speedview05=0x7f0a0037;
-        public static final int stat_ascension=0x7f0a005d;
-        public static final int stat_averagespeed=0x7f0a0057;
-        public static final int stat_distance=0x7f0a0055;
-        public static final int stat_elapsedtime=0x7f0a005c;
-        public static final int stat_endtime=0x7f0a005b;
-        public static final int stat_maximumspeed=0x7f0a0058;
-        public static final int stat_overallaveragespeed=0x7f0a0056;
-        public static final int stat_starttime=0x7f0a005a;
-        public static final int stat_waypoints=0x7f0a0059;
+        public static final int startStationAutocomplete=0x7f0a0045;
+        public static final int startStationText=0x7f0a0044;
+        public static final int stat_ascension=0x7f0a0063;
+        public static final int stat_averagespeed=0x7f0a005d;
+        public static final int stat_distance=0x7f0a005b;
+        public static final int stat_elapsedtime=0x7f0a0062;
+        public static final int stat_endtime=0x7f0a0061;
+        public static final int stat_maximumspeed=0x7f0a005e;
+        public static final int stat_overallaveragespeed=0x7f0a005c;
+        public static final int stat_starttime=0x7f0a0060;
+        public static final int stat_waypoints=0x7f0a005f;
         public static final int textView1=0x7f0a000a;
         public static final int textView3=0x7f0a000f;
         public static final int top=0x7f0a0001;
-        public static final int tweetField=0x7f0a0050;
-        public static final int tweet_progress=0x7f0a004f;
+        public static final int tweetField=0x7f0a0056;
+        public static final int tweet_progress=0x7f0a0055;
         public static final int widget_insertnote_disabled=0x7f0a0007;
         public static final int widget_insertnote_enabled=0x7f0a0006;
         public static final int widget_trackingcontrol=0x7f0a0005;
@@ -207,6 +214,7 @@ public final class R {
     }
     public static final class string {
         public static final int BixiTrack_EndReason=0x7f0800fc;
+        public static final int BixiTrack_ServiceRating=0x7f0800fd;
         /**  ***************************
     Added for bixi tracking
     ***************************
@@ -216,7 +224,7 @@ public final class R {
         public static final int CONSUMER_SECRET=0x7f080001;
         public static final int OSM_CONSUMER_KEY=0x7f080002;
         public static final int OSM_CONSUMER_SECRET=0x7f080003;
-        public static final int about_activity_name_extended=0x7f0800fe;
+        public static final int about_activity_name_extended=0x7f0800ff;
         /**  ***************************
    About information
    ***************************
@@ -245,7 +253,7 @@ public final class R {
    About information
    ***************************
          */
-        public static final int about_comments=0x7f0800fd;
+        public static final int about_comments=0x7f0800fe;
         public static final int about_copyright=0x7f080004;
         public static final int about_email=0x7f080006;
         public static final int about_website_label=0x7f080007;
@@ -331,8 +339,8 @@ public final class R {
         public static final int disableblanking_title=0x7f080099;
         public static final int disabledimming_summary=0x7f08009c;
         public static final int disabledimming_title=0x7f08009b;
-        public static final int distance_smallunitname=0x7f080101;
-        public static final int distance_unitname=0x7f080100;
+        public static final int distance_smallunitname=0x7f080102;
+        public static final int distance_unitname=0x7f080101;
         public static final int email_gpxbody=0x7f080083;
         public static final int email_kmzbody=0x7f080084;
         /**  Communicated 
@@ -381,7 +389,7 @@ public final class R {
         public static final int jogrunner_message=0x7f0800cf;
         public static final int kmlAudioUnsupported=0x7f080086;
         public static final int kmlVideoUnsupported=0x7f080085;
-        public static final int knot_unitname=0x7f080102;
+        public static final int knot_unitname=0x7f080103;
         public static final int layer_altitude=0x7f080031;
         public static final int layer_bicycle=0x7f080037;
         public static final int layer_cloudmade=0x7f080035;
@@ -434,7 +442,7 @@ public final class R {
         public static final int menu_tracklist=0x7f08006e;
         public static final int menu_vacuum=0x7f080080;
         public static final int msg_connecting_to=0x7f080049;
-        public static final int nautic_unitname=0x7f080103;
+        public static final int nautic_unitname=0x7f080104;
         public static final int no_information_available=0x7f08004a;
         public static final int no_tracks=0x7f080058;
         public static final int opengpstracker_settings=0x7f08008e;
@@ -453,8 +461,8 @@ public final class R {
         public static final int osmusername_title=0x7f0800d8;
         public static final int osmvisibility_summary=0x7f0800df;
         public static final int osmvisibility_title=0x7f0800de;
-        public static final int pace_unitname=0x7f080104;
-        public static final int pace_unitname_imperial=0x7f080105;
+        public static final int pace_unitname=0x7f080105;
+        public static final int pace_unitname_imperial=0x7f080106;
         public static final int precision_summary=0x7f08009e;
         public static final int precision_title=0x7f08009d;
         public static final int preference_behavior=0x7f080090;
@@ -510,7 +518,7 @@ public final class R {
         public static final int showspeed_title=0x7f0800a7;
         public static final int showtraffic_summary=0x7f0800a6;
         public static final int showtraffic_title=0x7f0800a5;
-        public static final int speed_unitname=0x7f0800ff;
+        public static final int speed_unitname=0x7f080100;
         public static final int startupatboot=0x7f080097;
         public static final int startupatboot_summary=0x7f080098;
         public static final int stat_ascension=0x7f0800c4;
@@ -534,8 +542,8 @@ public final class R {
         public static final int streambroadcast_time_title=0x7f0800eb;
         public static final int streamenabled_summary=0x7f0800ea;
         public static final int streamenabled_title=0x7f0800e9;
-        public static final int surface_unitname_imperial=0x7f080107;
-        public static final int surface_unitname_metric=0x7f080106;
+        public static final int surface_unitname_imperial=0x7f080108;
+        public static final int surface_unitname_metric=0x7f080107;
         public static final int taskerror_breadcrumbs=0x7f080052;
         public static final int taskerror_breadcrumbs_activity=0x7f08004f;
         public static final int taskerror_breadcrumbs_bundle=0x7f080050;

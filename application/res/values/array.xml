@@ -83,11 +83,23 @@
 
     <string-array
             name="Reason_choices">
+        <item></item>
         <item>Home</item>
         <item>Work</item>
         <item>Else</item>
         <item>See Description (not recommended)</item>
     </string-array>
+
+    <string-array
+        name="Stations_names">
+        <!-- Used to provide station names as first step to the autocompletion adapter
+        Future development with a custom adapter that uses network or a cached version of
+        the list (in db ?) and considers station proximity-->
+        <item>Brébeuf / Laurier</item>
+        <item>Brébeuf / Saint-Grégoire</item>
+        <item>Notre Dame / Place Jacques Cartier</item>
+        </string-array>
+
 
    <string-array
       name="about_translators"

@@ -28,16 +28,6 @@
  */
 package nl.sogeti.android.gpstracker.db;
 
-import java.util.Date;
-
-import nl.sogeti.android.gpstracker.db.GPStracking.Media;
-import nl.sogeti.android.gpstracker.db.GPStracking.MediaColumns;
-import nl.sogeti.android.gpstracker.db.GPStracking.MetaData;
-import nl.sogeti.android.gpstracker.db.GPStracking.Segments;
-import nl.sogeti.android.gpstracker.db.GPStracking.Tracks;
-import nl.sogeti.android.gpstracker.db.GPStracking.TracksColumns;
-import nl.sogeti.android.gpstracker.db.GPStracking.Waypoints;
-import nl.sogeti.android.gpstracker.db.GPStracking.WaypointsColumns;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -48,6 +38,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.location.Location;
 import android.net.Uri;
 import android.util.Log;
+import nl.sogeti.android.gpstracker.db.GPStracking.*;
+
+import java.util.Date;
 
 /**
  * Class to hold bare-metal database operations exposed as functionality blocks
@@ -548,6 +541,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
       //args.put(Tracks.NAME, name);
 
        //TODO : Add here new data to input, OR NOT, maybe it will be taken care of by the ContentValues
+       //It is indeed taken care of by rightly setuping the columns in the ContentValue from NameTrack activity
 
       // Execute the query.
       SQLiteDatabase mDb = getWritableDatabase();

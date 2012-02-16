@@ -13,7 +13,7 @@
       <sourceFolder url="file://$MODULE_DIR$/main/java" isTestSource="false" />
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="inheritedJdk" />
+    <orderEntry type="jdk" jdkName="1.6" jdkType="JavaSDK" />
     <orderEntry type="module-library">
       <library name="signpost-core-1.2.1.1.jar">
         <CLASSES>

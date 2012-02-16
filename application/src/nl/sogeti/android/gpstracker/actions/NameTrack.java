@@ -28,29 +28,33 @@
  */
 package nl.sogeti.android.gpstracker.actions;
 
-import java.util.Calendar;
-
-import android.database.Cursor;
-import android.widget.*;
-import nl.sogeti.android.gpstracker.R;
-import nl.sogeti.android.gpstracker.db.GPStracking.Tracks;
-import android.app.Activity;
-import android.app.AlertDialog;
+import android.app.*;
 import android.app.AlertDialog.Builder;
-import android.app.Dialog;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
+import android.support.v4.widget.SimpleCursorAdapter;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.*;
+import nl.sogeti.android.gpstracker.R;
+import nl.sogeti.android.gpstracker.db.GPStracking.Tracks;
+
+import java.util.Calendar;
+
+//To use LoaderManager and cursorLoader classes on pre honeycomb
 
 /**
  * Empty Activity that pops up the dialog to name the track
@@ -58,7 +62,9 @@ import android.view.View;
  * @version $Id: NameTrack.java 1132 2011-10-09 18:52:59Z rcgroot $
  * @author rene (c) Jul 27, 2010, Sogeti B.V.
  */
-public class NameTrack extends Activity
+public class NameTrack extends FragmentActivity //Compatibility requirement : instead of Activity
+    implements LoaderManager.LoaderCallbacks<Cursor>, TextWatcher   //Required for LoaderManager, Used to watch user text
+                                                                         //input and restart cursorLoaders accordingly
 {
    private static final int DIALOG_TRACKNAME = 23;
 
@@ -76,7 +82,23 @@ public class NameTrack extends Activity
 
    private AutoCompleteTextView mStartStationAutoCompleteTextView;
     private AutoCompleteTextView mEndStationAutoCompleteTextView;
+
+    //To deprecate : this is used in the textbook version of autocompletetextview
+    //(filled from a resource file)
    private ArrayAdapter<String> mStationAdapter;
+    ///////////////////////////////////////////////////////////////////
+    private SimpleCursorAdapter mStartStationSimpleCursorAdapter;
+    private SimpleCursorAdapter mEndStationSimpleCursorAdapter;
+    //Used to pass around current user input in suggestion boxes
+    String mCurStartStationNameFilter;
+    String mCurEndStationNameFilter;
+
+    ///////////////////////////////////////////////////////////////////
+    
+    private static final int STARTSTATIONCURSOR_LOADER = 0;
+    private static final int ENDSTATIONCURSOR_LOADER = 1;
+
+    //private CursorAdapter
     //F8F END
 
    private boolean paused;
@@ -107,6 +129,52 @@ public class NameTrack extends Activity
 
 
    };
+
+    //Some hack to prevent autocomplete tips being displayed again after item selection
+    private final TextWatcher mStartStationTextWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            //To change body of implemented methods use File | Settings | File Templates.
+        }
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int start, int count, int after) {
+            if (count > 1)
+            {
+                mCurStartStationNameFilter = charSequence.toString();
+            }
+        }
+
+        @Override
+        public void afterTextChanged(Editable editable) {
+            //NOTE : the activity is also listening because cursorloader restart function needs to
+            //know where to find the callbacks, hence being passed the activity itself
+        }
+    };
+
+    private final TextWatcher mEndStationTextWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            //To change body of implemented methods use File | Settings | File Templates.
+        }
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int start, int count, int after) {
+            if (count > 1 )
+            {
+                mCurEndStationNameFilter = charSequence.toString();
+            }
+        }
+
+        @Override
+        public void afterTextChanged(Editable editable) {
+            //NOTE : the activity is also listening because cursorloader restart function needs to
+            //know where to find the callbacks, hence being passed the activity itself
+        }
+    };
+    //End of hack
+
+
 
     private void updateTrack()
     {
@@ -189,6 +257,61 @@ public class NameTrack extends Activity
       this.setVisible( false );
       paused = false;
       mTrackUri = this.getIntent().getData();
+       mCurStartStationNameFilter = "";
+       mCurEndStationNameFilter = "";
+
+       getSupportLoaderManager().initLoader(STARTSTATIONCURSOR_LOADER, null, this);
+       getSupportLoaderManager().initLoader(ENDSTATIONCURSOR_LOADER, null, this);
+
+       String[] uiBindFrom = { Tracks.NAME };
+       int[] uiBindTo = { android.R.id.text1 };
+       
+       mStartStationSimpleCursorAdapter = new SimpleCursorAdapter(
+               this, android.R.layout.simple_dropdown_item_1line,
+               null, uiBindFrom,
+               uiBindTo,
+               0);
+
+       mEndStationSimpleCursorAdapter = new SimpleCursorAdapter(
+               this, android.R.layout.simple_dropdown_item_1line,
+               null, uiBindFrom,
+               uiBindTo,
+               0);
+
+       // Set the CursorToStringConverter, to provide the labels for the
+       // choices to be displayed in the AutoCompleteTextView.
+       mStartStationSimpleCursorAdapter.setCursorToStringConverter(new SimpleCursorAdapter.CursorToStringConverter() {
+           public String convertToString(android.database.Cursor cursor) {
+               // Get the label for this row out of the "state" column
+               final int columnIndex = cursor.getColumnIndexOrThrow(Tracks.NAME);
+               final String str = cursor.getString(columnIndex);
+               return str;
+           }
+       });
+
+       //TODO : Maybe I should have this in an external object I'd reuse instead of two anonymous objects ?
+       mEndStationSimpleCursorAdapter.setCursorToStringConverter(new SimpleCursorAdapter.CursorToStringConverter() {
+           public String convertToString(android.database.Cursor cursor) {
+               // Get the label for this row out of the "state" column
+               final int columnIndex = cursor.getColumnIndexOrThrow(Tracks.NAME);
+               final String str = cursor.getString(columnIndex);
+               return str;
+           }
+       });
+
+
+
+       //DO NOT BE TEMPTED, THE FOLLOWING CODE MAKE THE QUERY FROM THE UI THREAD I THINK, AND THIS IS BAD, VERY BAD !
+       // Set the FilterQueryProvider, to run queries for choices
+       // that match the specified input.
+       /*mStartStationSimpleCursorAdapter.setFilterQueryProvider(new FilterQueryProvider() {
+           public Cursor runQuery(CharSequence constraint) {
+               // Search for states whose names begin with the specified letters.
+               Cursor cursor = mDbHelper.getMatchingStates(
+                       (constraint != null ? constraint.toString() : null));
+               return cursor;
+           }
+       });*/
    }
    
    @Override
@@ -241,45 +364,21 @@ public class NameTrack extends Activity
              mOriginReasonSpinner.setAdapter(mReasonAdapter);
              mDestinationReasonSpinner.setAdapter(mReasonAdapter);
 
-             mOriginReasonSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-             {
-                 //          public void onItemSelected(AdapterView<?> parent,
-//                                     View view, int pos, long id) {
-                 public void onItemSelected(AdapterView< ? > arg0, View arg1, int position, long arg3)
-                 {
-                     //adjustTargetToType(position);
-                 }
-
-                 public void onNothingSelected(AdapterView< ? > arg0)
-                 { /* NOOP */
-                 }
-             });
-//             mDestinationReasonSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-//             {
-//                 //          public void onItemSelected(AdapterView<?> parent,
-////                                     View view, int pos, long id) {
-//                 public void onItemSelected(AdapterView< ? > arg0, View arg1, int position, long arg3)
-//                 {
-//                     //adjustTargetToType(position);
-//                 }
-//
-//                 public void onNothingSelected(AdapterView< ? > arg0)
-//                 { /* NOOP */
-//                 }
-//             });
-
              mStartStationAutoCompleteTextView = (AutoCompleteTextView) view.findViewById(R.id.startStationAutocomplete);
 
-             String[] stationsNames = getResources().getStringArray(R.array.Stations_names);
-             //mStationAdapter = ArrayAdapter.createFromResource(this, R.array.Stations_names, android.R.layout.simple_list_item_1);
-             mStationAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, stationsNames);
-             mStartStationAutoCompleteTextView.setAdapter(mStationAdapter);
+             mStartStationAutoCompleteTextView.setAdapter(mStartStationSimpleCursorAdapter);
+             mStartStationAutoCompleteTextView.addTextChangedListener(this);
+             mStartStationAutoCompleteTextView.addTextChangedListener(mStartStationTextWatcher);
+
 
              mEndStationAutoCompleteTextView = (AutoCompleteTextView) view.findViewById(R.id.endStationAutocomplete);
-             mEndStationAutoCompleteTextView.setAdapter(mStationAdapter);
+
+             mEndStationAutoCompleteTextView.setAdapter(mEndStationSimpleCursorAdapter);
+             mEndStationAutoCompleteTextView.addTextChangedListener(this);
+             mEndStationAutoCompleteTextView.addTextChangedListener(mEndStationTextWatcher);
 
             builder
-               .setTitle( R.string.dialog_routename_title )
+               .setTitle(R.string.dialog_routename_title)
                //.setMessage( R.string.dialog_routename_message )
                .setIcon( android.R.drawable.ic_dialog_alert )
                .setPositiveButton( R.string.btn_okay, mTrackNameDialogListener )
@@ -309,16 +408,13 @@ public class NameTrack extends Activity
       switch (id)
       {
          case DIALOG_TRACKNAME:
-            //String trackName;
 
-
-             //I need to setup data such as dialog reflects database content
-             //I have the track URI so damn fucking fuck I'll get that row
              Cursor trackCursor = null;
+             //TODO: I feel kinda bad now I'm using CursorLoader for start/end station, though here I always request 1 ROW AT MOST (AND HOPEFULLY)
              //trackCursor = TrackList.this.getContentResolver().query(mDialogUri, new String[] { Tracks._ID, Tracks.WITH_HELMET, Tracks.START_REASON}, null, null,null);
              trackCursor = getContentResolver().query(mTrackUri, null, null, null,null);
 
-             //This should always contains at most 1 row, given we request for a particular track ID
+             //This should always contains at most 1 row, given we request for a particular track ID, contained in the URI
              if (trackCursor.moveToFirst())
              {
                  String trackName = trackCursor.getString(trackCursor.getColumnIndex(Tracks.NAME));
@@ -375,14 +471,134 @@ public class NameTrack extends Activity
                  mEndStationAutoCompleteTextView.setText(endStationName);
              }
 
-             //TODO: Retrieve stuff from the database to link the dialog state to data
-             //Check hos this is done in the track lst view for example
              trackCursor.close();
+             //Yeah that's where it is suspect, I should now use Loader to avoid managing cursor myself
             break;
          default:
             super.onPrepareDialog( id, dialog );
             break;
       }
-   }   
+   }
+
+    //////////////////////////////////////////////////////////////////////////
+    //CursorLoader interface
+    @Override
+    public Loader<Cursor> onCreateLoader(int loaderID, Bundle bundle)
+    {
+        //??
+        // NOTE:
+        // If wildcards are to be used in a rawQuery, they must appear
+        // in the query parameters, and not in the query string proper.
+        // See http://code.google.com/p/android/issues/detail?id=3153
+        //constraint = constraint.trim() + "%";
+        //--> Ok got it, though I wonder what dictates where I put the '%' character
+        //: in the select clause or concatenated at the end of the corresponding selectArgs[] item
+        //So here goes, I put the % in selectArgs, though I don't feel like I use a 'rawQuery'
+
+        //TODO: Replace this to connect to new StationsProvider table
+        /*this means :  - correct URI
+                        - good projection (inspect goofy _ID thing)
+                        - good select, though it will be very similar
+                        - selectArgs should be unchanged
+                        - sortorder shouldn't change either*/
+        String[] stationProjection = {Tracks._ID, Tracks.NAME};
+        String stationSelect = Tracks.NAME + " LIKE ?";
+        //Assuming mCurStartStationNameFilter/mCurEndStationNameFilter has been trimmed
+        String[] stationSelectArgs = null;
+        if (loaderID == STARTSTATIONCURSOR_LOADER)
+        {
+            stationSelectArgs = new String[]{"%" + mCurStartStationNameFilter + "%"};
+        }
+        else
+        {
+            stationSelectArgs = new String[]{"%" + mCurEndStationNameFilter + "%"};
+        }
+
+        //String[] selectArgs = {"sim%"};
+        String stationSortOrder = Tracks.NAME + " COLLATE LOCALIZED ASC";
+
+        CursorLoader cursorLoader = null;
+
+        if (loaderID == STARTSTATIONCURSOR_LOADER && mCurStartStationNameFilter.isEmpty() ||
+                loaderID == ENDSTATIONCURSOR_LOADER && mCurEndStationNameFilter.isEmpty())
+        {
+            //I don't feel good requesting every rows here as the precise point of using an autocompletetextview
+            //is to avoid it. Though it seems the GUI element can't function with an empty Loader created with the empty constructor
+            //even if suggestion are supposed to appear after a few characters are in. I could format a request such as getting an
+            //empty cursor ?
+
+            cursorLoader = new CursorLoader(this,
+                    //        Tracks.CONTENT_URI, projection, select, selectArgs, sortOrder);
+                    Tracks.CONTENT_URI, null, null, null, null);
+        }
+        else
+        {
+            cursorLoader = new CursorLoader(this,
+                    Tracks.CONTENT_URI, stationProjection, stationSelect, stationSelectArgs, stationSortOrder);
+            //Tracks.CONTENT_URI, null, null, null, null);
+        }
+
+        return cursorLoader;
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor)
+    {
+        if (cursorLoader.getId() == STARTSTATIONCURSOR_LOADER)
+        {
+            mStartStationSimpleCursorAdapter.swapCursor(cursor);
+        }
+        else
+        {
+            mEndStationSimpleCursorAdapter.swapCursor(cursor);
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> cursorLoader)
+    {
+        if (cursorLoader.getId() == STARTSTATIONCURSOR_LOADER)
+        {
+            mStartStationSimpleCursorAdapter.swapCursor(null);
+        }
+        else
+        {
+            mEndStationSimpleCursorAdapter.swapCursor(null);
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    //TextWatcher interface for activity
+    @Override
+    public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
+    }
+
+    @Override
+    public void onTextChanged(CharSequence charSequence, int start, int count, int after) {
+    }
+
+    @Override
+    public void afterTextChanged(Editable editable) {
+
+        if(mStartStationAutoCompleteTextView.enoughToFilter())
+        {
+            String newFilter = editable.toString();
+
+            if (!newFilter.equalsIgnoreCase(mCurStartStationNameFilter))
+            {
+                mCurStartStationNameFilter = newFilter;
+                getSupportLoaderManager().restartLoader(STARTSTATIONCURSOR_LOADER, null, this);
+            }
+        }
+        
+        if (mEndStationAutoCompleteTextView.enoughToFilter())
+        {
+            String newFilter = editable.toString();
+            if (!newFilter.equalsIgnoreCase(mCurEndStationNameFilter))
+            {
+                mCurEndStationNameFilter = newFilter;
+                getSupportLoaderManager().restartLoader(ENDSTATIONCURSOR_LOADER, null, this);
+            }
+        }
+    }
 }
    

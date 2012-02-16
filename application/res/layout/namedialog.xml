@@ -82,27 +82,48 @@
                     android:text="Start Station"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
+            <ImageButton
+                    android:layout_below="@+id/startStationText"
+                    android:id="@+id/startStationButton"
+                    android:layout_alignParentRight="true"
+                    android:src="@android:drawable/ic_menu_mylocation"
+                    android:text="0"
+                    android:layout_width="60dp"
+                    android:layout_height="wrap_content"/>
             <AutoCompleteTextView
                     android:layout_below="@+id/startStationText"
                     android:id="@+id/startStationAutocomplete"
-                    android:layout_width="fill_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"/>
+                    android:layout_alignParentLeft="true"
+                    android:layout_toLeftOf="@id/startStationButton"
+                    android:layout_marginLeft="0dp"/>
+
 
             <TextView
                     android:layout_below="@+id/startStationAutocomplete"
-                    android:id="@+id/EndStationText"
+                    android:id="@+id/endStationText"
                     android:layout_alignParentLeft="true"
                     android:text="End Station"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
             <!--&lt;!&ndash;android:text="@string/share_type"&ndash;&gt;-->
+            <ImageButton
+                    android:layout_below="@+id/endStationText"
+                    android:id="@+id/endStationButton"
+                    android:layout_alignParentRight="true"
+                    android:src="@android:drawable/ic_menu_mylocation"
+                    android:text="0"
+                    android:layout_width="60dp"
+                    android:layout_height="wrap_content"/>
             <AutoCompleteTextView
-                    android:layout_below="@+id/EndStationText"
+                    android:layout_below="@+id/endStationText"
                     android:id="@+id/endStationAutocomplete"
-                    android:layout_width="fill_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"/>
+                    android:layout_alignParentLeft="true"
+                    android:layout_toLeftOf="@id/endStationButton"
+                    android:layout_marginLeft="0dp"/>
 
         </RelativeLayout>
     </ScrollView>

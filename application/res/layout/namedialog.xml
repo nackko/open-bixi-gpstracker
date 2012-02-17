@@ -93,6 +93,7 @@
             <AutoCompleteTextView
                     android:layout_below="@+id/startStationText"
                     android:id="@+id/startStationAutocomplete"
+                    android:dropDownWidth="fill_parent"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
@@ -119,6 +120,7 @@
             <AutoCompleteTextView
                     android:layout_below="@+id/endStationText"
                     android:id="@+id/endStationAutocomplete"
+                    android:dropDownWidth="fill_parent"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"

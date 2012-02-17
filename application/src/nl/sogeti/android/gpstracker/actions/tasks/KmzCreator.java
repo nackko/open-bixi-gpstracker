@@ -28,16 +28,13 @@
  */
 package nl.sogeti.android.gpstracker.actions.tasks;
 
-import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.TimeZone;
-
+import android.content.ContentResolver;
+import android.content.Context;
+import android.database.Cursor;
+import android.net.Uri;
+import android.provider.MediaStore.MediaColumns;
+import android.util.Log;
+import android.util.Xml;
 import nl.sogeti.android.gpstracker.R;
 import nl.sogeti.android.gpstracker.actions.utils.ProgressListener;
 import nl.sogeti.android.gpstracker.db.GPStracking;
@@ -46,16 +43,12 @@ import nl.sogeti.android.gpstracker.db.GPStracking.Segments;
 import nl.sogeti.android.gpstracker.db.GPStracking.Tracks;
 import nl.sogeti.android.gpstracker.db.GPStracking.Waypoints;
 import nl.sogeti.android.gpstracker.util.Constants;
-
 import org.xmlpull.v1.XmlSerializer;
 
-import android.content.ContentResolver;
-import android.content.Context;
-import android.database.Cursor;
-import android.net.Uri;
-import android.provider.MediaStore.MediaColumns;
-import android.util.Log;
-import android.util.Xml;
+import java.io.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
 
 /**
  * Create a KMZ version of a stored track
@@ -410,7 +403,7 @@ public class KmzCreator extends XmlCreator
             serializer.startTag("", "coordinates");
             do
             {
-               mProgressAdmin.addWaypointProgress(1);
+               mXmlCreatorProgressAdmin.addWaypointProgress(1);
                // Single Coordinate tuple
                serializeCoordinates(serializer, waypointsCursor);
                serializer.text(" ");

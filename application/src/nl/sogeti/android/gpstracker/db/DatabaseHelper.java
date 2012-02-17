@@ -175,6 +175,25 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
       return inserted;
    }
+    
+    boolean insertStation(long stationID, String name, Location location)
+    {
+        SQLiteDatabase sqldb = getWritableDatabase();
+        ContentValues args = new ContentValues();
+        args.put(Stations._ID, stationID);
+        args.put(Stations.NAME, name);
+        args.put(Stations.LATITUDE, location.getLatitude());
+        args.put(Stations.LONGITUDE, location.getLongitude());
+
+        //Maybe there should be more check going on
+        /*long returncode = */sqldb.insert(Stations.TABLE, null, args);
+
+        ContentResolver resolver = this.mContext.getContentResolver();
+        Uri notifyUri = Uri.withAppendedPath(Stations.CONTENT_URI, String.valueOf(stationID));
+        resolver.notifyChange(notifyUri, null);
+
+        return true;
+    }
 
    /**
     * Creates a waypoint under the current track segment with the current time
@@ -666,4 +685,27 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
       return segmentId;
    }
+
+    public void dropStationsTable()
+    {
+        SQLiteDatabase sqldb = getWritableDatabase();
+
+        sqldb.execSQL("DROP TABLE IF EXISTS " + Stations.TABLE);
+
+        ContentResolver resolver = this.mContext.getContentResolver();
+
+        resolver.notifyChange(Uri.parse(Stations.TABLE), null);
+
+    }
+    
+    public void createStationsTable()
+    {
+        SQLiteDatabase sqldb = getWritableDatabase();
+
+        sqldb.execSQL(Stations.CREATE_STATEMENT);
+
+        ContentResolver resolver = this.mContext.getContentResolver();
+
+        resolver.notifyChange(Uri.parse(Stations.TABLE), null);
+    }
 }

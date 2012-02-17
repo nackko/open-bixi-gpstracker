@@ -28,15 +28,6 @@
  */
 package nl.sogeti.android.gpstracker.db;
 
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-
-import nl.sogeti.android.gpstracker.db.GPStracking.Media;
-import nl.sogeti.android.gpstracker.db.GPStracking.MetaData;
-import nl.sogeti.android.gpstracker.db.GPStracking.Segments;
-import nl.sogeti.android.gpstracker.db.GPStracking.Tracks;
-import nl.sogeti.android.gpstracker.db.GPStracking.Waypoints;
 import android.app.SearchManager;
 import android.content.ContentProvider;
 import android.content.ContentUris;
@@ -49,6 +40,11 @@ import android.location.Location;
 import android.net.Uri;
 import android.provider.LiveFolders;
 import android.util.Log;
+import nl.sogeti.android.gpstracker.db.GPStracking.*;
+
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Goal of this Content Provider is to make the GPS Tracking information uniformly 
@@ -121,6 +117,13 @@ import android.util.Log;
  *
  * @version $Id: GPStrackingProvider.java 1132 2011-10-09 18:52:59Z rcgroot $
  * @author rene (c) Jan 22, 2009, Sogeti B.V.
+ *
+ * @author F8Full Feb 17, 2012
+ * Added the ability to store bike network 'static' data
+ * <code>content://nl.sogeti.android.gpstracker/stations</code>
+ * is the URI that returns all the stored stations or starts a new station on insert
+ * <code>content://nl.sogeti.android.gpstracker/stations/23</code>
+ * is the URI string that would return a single result row, the station with ID = 23.
  */
 public class GPStrackingProvider extends ContentProvider
 {
@@ -146,7 +149,11 @@ public class GPStrackingProvider extends ContentProvider
    private static final int SEGMENT_METADATA  = 16;
    private static final int WAYPOINT_METADATA = 17;
    private static final int METADATA          = 18;
-   private static final int METADATA_ID       = 19;   
+   private static final int METADATA_ID       = 19;
+    
+   private static final int STATIONS          = 20;
+   private static final int STATION_ID        = 21;
+
    private static final String[] SUGGEST_PROJECTION = 
       new String[] 
         { 
@@ -193,6 +200,10 @@ public class GPStrackingProvider extends ContentProvider
       GPStrackingProvider.sURIMatcher.addURI( GPStracking.AUTHORITY, "live_folders/tracks", GPStrackingProvider.LIVE_FOLDERS );
       GPStrackingProvider.sURIMatcher.addURI( GPStracking.AUTHORITY, "search_suggest_query", GPStrackingProvider.SEARCH_SUGGEST_ID );
 
+      GPStrackingProvider.sURIMatcher.addURI( GPStracking.AUTHORITY, "stations", GPStrackingProvider.STATIONS);
+      GPStrackingProvider.sURIMatcher.addURI( GPStracking.AUTHORITY, "stations/#", GPStrackingProvider.STATION_ID);
+
+
    }
 
    private DatabaseHelper mDbHelper;
@@ -223,6 +234,12 @@ public class GPStrackingProvider extends ContentProvider
       String mime = null;
       switch (match)
       {
+          case STATIONS:
+              mime = Stations.CONTENT_TYPE;
+              break;
+          case STATION_ID:
+              mime = Stations.CONTENT_ITEM_TYPE;
+              break;
          case TRACKS:
             mime = Tracks.CONTENT_TYPE;
             break;
@@ -273,6 +290,7 @@ public class GPStrackingProvider extends ContentProvider
          int match = GPStrackingProvider.sURIMatcher.match( uri );
          List<String> pathSegments = null;
          long trackId = -1;
+         long stationId = -1;
          long segmentId = -1;
          long waypointId = -1;
          long mediaId = -1;
@@ -280,6 +298,21 @@ public class GPStrackingProvider extends ContentProvider
          String value;
          switch (match)
          {
+            case  STATIONS:
+                stationId = values.getAsLong(Stations._ID);
+                String stationName = values.getAsString(Stations.NAME);
+                Location stationLoc = new Location( TAG );
+                Double stationLatitude = values.getAsDouble(Stations.LATITUDE);
+                Double stationLongitude = values.getAsDouble(Stations.LONGITUDE);
+
+                stationLoc.setLatitude(stationLatitude);
+                stationLoc.setLongitude(stationLongitude);
+
+                mDbHelper.insertStation(stationId, stationName, stationLoc);
+
+                insertedUri = ContentUris.withAppendedId(uri, stationId);
+
+                break;
             case WAYPOINTS:
                pathSegments     = uri.getPathSegments();
                trackId          = Long.parseLong( pathSegments.get( 1 ) );
@@ -395,6 +428,14 @@ public class GPStrackingProvider extends ContentProvider
          List<String> pathSegments = uri.getPathSegments();
          switch (match)
          {
+             case STATIONS:
+                 tableName = Stations.TABLE;
+                 break;
+             case STATION_ID:
+                 tableName = Stations.TABLE;
+                 innerSelection = Stations._ID + " = ? ";
+                 innerSelectionArgs = new String[]{ pathSegments.get(1) };
+                 break;
             case TRACKS:
                tableName = Tracks.TABLE;
                break;
@@ -550,6 +591,10 @@ public class GPStrackingProvider extends ContentProvider
       String value;
       switch (match)
       {
+          case STATION_ID:
+              Log.e( GPStrackingProvider.TAG, "There shouldn't be station update" + uri.toString() );
+              return -1;
+              //break;
          case TRACK_ID:
             trackId = new Long( uri.getLastPathSegment() ).longValue();
             //String name = givenValues.getAsString( Tracks.NAME );
@@ -604,6 +649,9 @@ public class GPStrackingProvider extends ContentProvider
       int affected = 0; 
       switch( match )
       {
+          //case STATION_ID:
+          //No delete of a single station, the whole table is rebuilt every time
+
          case GPStrackingProvider.TRACK_ID:
             affected = this.mDbHelper.deleteTrack( new Long( uri.getLastPathSegment() ).longValue() );
             break;
@@ -627,6 +675,7 @@ public class GPStrackingProvider extends ContentProvider
       int match = GPStrackingProvider.sURIMatcher.match( uri );
       switch (match)
       {
+          //TODO: Stations bulk insert to improve import performance ?
          case WAYPOINTS:
             List<String> pathSegments = uri.getPathSegments();
             int trackId = Integer.parseInt( pathSegments.get( 1 ) );

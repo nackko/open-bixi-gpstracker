@@ -28,6 +28,23 @@
  */
 package nl.sogeti.android.gpstracker.actions.tasks;
 
+import android.content.ContentResolver;
+import android.content.ContentValues;
+import android.content.Context;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.util.Log;
+import nl.sogeti.android.gpstracker.R;
+import nl.sogeti.android.gpstracker.actions.utils.ProgressListener;
+import nl.sogeti.android.gpstracker.db.GPStracking.Tracks;
+import nl.sogeti.android.gpstracker.db.GPStracking.Waypoints;
+import nl.sogeti.android.gpstracker.util.ByteProgressAdmin;
+import nl.sogeti.android.gpstracker.util.ProgressFilterInputStream;
+import nl.sogeti.android.gpstracker.util.UnicodeReader;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlPullParserFactory;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -38,25 +55,6 @@ import java.util.Date;
 import java.util.TimeZone;
 import java.util.Vector;
 import java.util.concurrent.CancellationException;
-
-import nl.sogeti.android.gpstracker.R;
-import nl.sogeti.android.gpstracker.actions.utils.ProgressListener;
-import nl.sogeti.android.gpstracker.db.GPStracking.Tracks;
-import nl.sogeti.android.gpstracker.db.GPStracking.Waypoints;
-import nl.sogeti.android.gpstracker.util.ProgressFilterInputStream;
-import nl.sogeti.android.gpstracker.util.UnicodeReader;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-import org.xmlpull.v1.XmlPullParserFactory;
-
-import android.content.ContentResolver;
-import android.content.ContentValues;
-import android.content.Context;
-import android.net.Uri;
-import android.os.AsyncTask;
-import android.util.Log;
-import android.view.Window;
 
 public class GpxParser extends AsyncTask<Uri, Void, Uri>
 {
@@ -88,7 +86,7 @@ public class GpxParser extends AsyncTask<Uri, Void, Uri>
    protected Exception mErrorDialogException;
    protected Context mContext;
    private ProgressListener mProgressListener;
-   protected ProgressAdmin mProgressAdmin;
+   protected GPXParserProgressAdmin mGPXParserProgressAdmin;
    
    public GpxParser(Context context, ProgressListener progressListener)
    {
@@ -99,12 +97,12 @@ public class GpxParser extends AsyncTask<Uri, Void, Uri>
    
    public void determineProgressGoal(Uri importFileUri)
    {
-      mProgressAdmin = new ProgressAdmin();
-      mProgressAdmin.setContentLength(DEFAULT_UNKNOWN_FILESIZE);
+      mGPXParserProgressAdmin = new GPXParserProgressAdmin();
+      mGPXParserProgressAdmin.setContentLength(DEFAULT_UNKNOWN_FILESIZE);
       if (importFileUri != null && importFileUri.getScheme().equals("file"))
       {
          File file = new File(importFileUri.getPath());
-         mProgressAdmin.setContentLength(file.length());
+         mGPXParserProgressAdmin.setContentLength(file.length());
       }
    }
 
@@ -158,7 +156,7 @@ public class GpxParser extends AsyncTask<Uri, Void, Uri>
          XmlPullParser xmlParser = factory.newPullParser();
 
 
-         ProgressFilterInputStream pfis = new ProgressFilterInputStream(fis, mProgressAdmin);
+         ProgressFilterInputStream pfis = new ProgressFilterInputStream(fis, mGPXParserProgressAdmin);
          BufferedInputStream bis = new BufferedInputStream(pfis);
          UnicodeReader ur = new UnicodeReader(bis, "UTF-8");
          xmlParser.setInput(ur);
@@ -391,8 +389,8 @@ public class GpxParser extends AsyncTask<Uri, Void, Uri>
 
    /**
     * 
-    * @param e
-    * @param text
+    * @param dialogException
+    * @param dialogErrorMessage
     */
    protected void handleError(Exception dialogException, String dialogErrorMessage)
    {
@@ -421,7 +419,7 @@ public class GpxParser extends AsyncTask<Uri, Void, Uri>
    @Override
    protected void onProgressUpdate(Void... values)
    {
-      mProgressListener.setProgress(mProgressAdmin.getProgress());
+      mProgressListener.setProgress(mGPXParserProgressAdmin.getProgress());
    }
    
    @Override
@@ -436,39 +434,22 @@ public class GpxParser extends AsyncTask<Uri, Void, Uri>
       mProgressListener.showError(mContext.getString(R.string.taskerror_gpx_import), mErrorDialogMessage, mErrorDialogException);
    }
    
-   public class ProgressAdmin
+   public class GPXParserProgressAdmin extends ByteProgressAdmin
    {
-      private long progressedBytes;
-      private long contentLength;
-      private int progress;
-      private long lastUpdate;
-      /**
-       * Get the progress.
-       *
-       * @return Returns the progress as a int.
-       */
-      public int getProgress()
-      {
-         return progress;
-      }
       public void addBytesProgress(int addedBytes)
       {
-         progressedBytes += addedBytes;
-         progress = (int) (Window.PROGRESS_END * progressedBytes / contentLength);
+         super.addBytesProgress(addedBytes);
+
          considerPublishProgress();
       }
-      public void setContentLength(long contentLength)
-      {
-         this.contentLength = contentLength;
-      }
+
+       @Override
       public void considerPublishProgress()
       {
-         long now = new Date().getTime();
-         if( now - lastUpdate > 1000 )
-         {
-            lastUpdate = now;
-            publishProgress();
-         }         
+          if(mustPublishProgress())
+          {
+              publishProgress();
+          }
       }
    }
 };

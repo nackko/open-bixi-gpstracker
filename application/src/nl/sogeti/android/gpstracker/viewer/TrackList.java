@@ -28,12 +28,26 @@
  */
 package nl.sogeti.android.gpstracker.viewer;
 
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
+import android.app.Dialog;
+import android.app.ListActivity;
+import android.app.SearchManager;
+import android.content.*;
+import android.content.DialogInterface.OnClickListener;
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.*;
 import android.widget.*;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import nl.sogeti.android.gpstracker.R;
 import nl.sogeti.android.gpstracker.actions.DescribeTrack;
 import nl.sogeti.android.gpstracker.actions.NameTrack;
 import nl.sogeti.android.gpstracker.actions.Statistics;
 import nl.sogeti.android.gpstracker.actions.tasks.GpxParser;
+import nl.sogeti.android.gpstracker.actions.tasks.StationsXMLParser;
 import nl.sogeti.android.gpstracker.actions.utils.ProgressListener;
 import nl.sogeti.android.gpstracker.adapter.BreadcrumbsAdapter;
 import nl.sogeti.android.gpstracker.adapter.BreadcrumbsTracks;
@@ -43,29 +57,6 @@ import nl.sogeti.android.gpstracker.db.GPStracking;
 import nl.sogeti.android.gpstracker.db.GPStracking.Tracks;
 import nl.sogeti.android.gpstracker.util.Constants;
 import nl.sogeti.android.gpstracker.util.Pair;
-import android.app.AlertDialog;
-import android.app.AlertDialog.Builder;
-import android.app.Dialog;
-import android.app.ListActivity;
-import android.app.SearchManager;
-import android.content.ActivityNotFoundException;
-import android.content.ComponentName;
-import android.content.ContentUris;
-import android.content.ContentValues;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
-import android.content.Intent;
-import android.database.Cursor;
-import android.net.Uri;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.ContextMenu;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.Window;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 
 /**
  * Show a list view of all tracks, also doubles for showing search results
@@ -85,6 +76,8 @@ public class TrackList extends ListActivity implements ProgressListener
    private static final int MENU_VACUUM = Menu.FIRST + 5;
    private static final int MENU_PICKER = Menu.FIRST + 6;
    private static final int MENU_BREADCRUMBS = Menu.FIRST + 7;
+    
+    private static final int MENU_BUILD_STATIONS_TABLE = Menu.FIRST + 8;
 
    public static final int DIALOG_FILENAME = Menu.FIRST + 22;
    private static final int DIALOG_RENAME = Menu.FIRST + 23;
@@ -250,6 +243,7 @@ public class TrackList extends ListActivity implements ProgressListener
             .setAlphabeticShortcut(SearchManager.MENU_KEY);
       menu.add(ContextMenu.NONE, MENU_VACUUM, ContextMenu.NONE, R.string.menu_vacuum).setIcon(android.R.drawable.ic_menu_crop);
       menu.add(ContextMenu.NONE, MENU_PICKER, ContextMenu.NONE, R.string.menu_picker).setIcon(android.R.drawable.ic_menu_add);
+       menu.add(ContextMenu.NONE, MENU_BUILD_STATIONS_TABLE, ContextMenu.NONE, "Build stations table").setIcon(android.R.drawable.ic_menu_save);
       menu.add(ContextMenu.NONE, MENU_BREADCRUMBS, ContextMenu.NONE, R.string.dialog_breadcrumbsconnect).setIcon(android.R.drawable.ic_menu_revert);
       return result;
    }
@@ -267,6 +261,14 @@ public class TrackList extends ListActivity implements ProgressListener
          case MENU_VACUUM:
             showDialog(DIALOG_VACUUM);
             break;
+         case MENU_BUILD_STATIONS_TABLE:
+             DatabaseHelper helper = new DatabaseHelper(getApplicationContext());
+
+             //new StationsXMLParser(TrackList.this, TrackList.this).execute("http://192.168.1.18:666/01_10_2010__16_55_01.xml");
+             new StationsXMLParser(TrackList.this, TrackList.this).execute("http://f8full.is-a-geek.org:666/01_10_2010__16_55_01.xml");
+             //new StationsXMLParser(TrackList.this, TrackList.this).execute("https://toronto.bixi.com/data/bikeStations.xml");
+
+             break;
          case MENU_PICKER:
             try
             {

@@ -28,15 +28,12 @@
  */
 package nl.sogeti.android.gpstracker.adapter.tasks;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
+import android.content.ContentResolver;
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
+import android.net.Uri;
+import android.util.Log;
 import nl.sogeti.android.gpstracker.R;
 import nl.sogeti.android.gpstracker.actions.tasks.GpxCreator;
 import nl.sogeti.android.gpstracker.actions.tasks.XmlCreator;
@@ -48,7 +45,6 @@ import oauth.signpost.OAuthConsumer;
 import oauth.signpost.exception.OAuthCommunicationException;
 import oauth.signpost.exception.OAuthExpectationFailedException;
 import oauth.signpost.exception.OAuthMessageSignerException;
-
 import org.apache.ogt.http.Header;
 import org.apache.ogt.http.HttpEntity;
 import org.apache.ogt.http.HttpResponse;
@@ -60,12 +56,14 @@ import org.apache.ogt.http.entity.mime.content.FileBody;
 import org.apache.ogt.http.entity.mime.content.StringBody;
 import org.apache.ogt.http.util.EntityUtils;
 
-import android.content.ContentResolver;
-import android.content.ContentValues;
-import android.content.Context;
-import android.database.Cursor;
-import android.net.Uri;
-import android.util.Log;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * An asynchronous task that communicates with Twitter to retrieve a request
@@ -119,7 +117,7 @@ public class UploadBreadcrumbsTrackTask extends GpxCreator
    {
       // Leave room in the progressbar for uploading
       determineProgressGoal();
-      mProgressAdmin.setUpload(true);
+      mXmlCreatorProgressAdmin.setUpload(true);
 
       // Build GPX file
       Uri gpxFile = exportGpx();
@@ -236,7 +234,7 @@ public class UploadBreadcrumbsTrackTask extends GpxCreator
             }
          }  
          HttpResponse response = mHttpClient.execute(method);
-         mProgressAdmin.addUploadProgress();
+         mXmlCreatorProgressAdmin.addUploadProgress();
 
          statusCode = response.getStatusLine().getStatusCode();
          responseEntity = response.getEntity();
@@ -368,7 +366,7 @@ public class UploadBreadcrumbsTrackTask extends GpxCreator
       File source = new File(inputFilePath);
       if (source.exists())
       {
-         mProgressAdmin.setPhotoUpload(source.length());
+         mXmlCreatorProgressAdmin.setPhotoUpload(source.length());
          mPhotoUploadQueue.add(source);
       }
       return source.getName();
@@ -404,7 +402,7 @@ public class UploadBreadcrumbsTrackTask extends GpxCreator
       InputStream stream = responseEntity.getContent();
       String responseText = XmlCreator.convertStreamToString(stream);
       
-      mProgressAdmin.addPhotoUploadProgress(photo.length());
+      mXmlCreatorProgressAdmin.addPhotoUploadProgress(photo.length());
       
       Log.i( TAG, "Uploaded photo "+responseText);
    }

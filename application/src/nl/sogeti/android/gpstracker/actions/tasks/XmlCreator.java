@@ -28,31 +28,6 @@
  */
 package nl.sogeti.android.gpstracker.actions.tasks;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.StringWriter;
-import java.io.Writer;
-import java.nio.channels.FileChannel;
-import java.util.Date;
-import java.util.concurrent.CancellationException;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
-
-import nl.sogeti.android.gpstracker.actions.utils.ProgressListener;
-import nl.sogeti.android.gpstracker.db.GPStracking.Media;
-import nl.sogeti.android.gpstracker.db.GPStracking.Tracks;
-import nl.sogeti.android.gpstracker.db.GPStracking.Waypoints;
-import nl.sogeti.android.gpstracker.util.Constants;
-
-import org.xmlpull.v1.XmlSerializer;
-
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
@@ -61,6 +36,19 @@ import android.os.AsyncTask;
 import android.os.Environment;
 import android.util.Log;
 import android.view.Window;
+import nl.sogeti.android.gpstracker.actions.utils.ProgressListener;
+import nl.sogeti.android.gpstracker.db.GPStracking.Media;
+import nl.sogeti.android.gpstracker.db.GPStracking.Tracks;
+import nl.sogeti.android.gpstracker.db.GPStracking.Waypoints;
+import nl.sogeti.android.gpstracker.util.Constants;
+import nl.sogeti.android.gpstracker.util.ProgressAdmin;
+import org.xmlpull.v1.XmlSerializer;
+
+import java.io.*;
+import java.nio.channels.FileChannel;
+import java.util.concurrent.CancellationException;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 /**
  * Async XML creation task Execute without parameters (Void) Update posted with
@@ -83,7 +71,7 @@ public abstract class XmlCreator extends AsyncTask<Void, Integer, Uri>
    private String mErrorText;
    private Exception mException;
    private String mTask;
-   public ProgressAdmin mProgressAdmin;
+   public XmlCreatorProgressAdmin mXmlCreatorProgressAdmin;
 
    XmlCreator(Context context, Uri trackUri, String chosenFileName, ProgressListener listener)
    {
@@ -91,7 +79,7 @@ public abstract class XmlCreator extends AsyncTask<Void, Integer, Uri>
       mContext = context;
       mTrackUri = trackUri;
       mProgressListener = listener;
-      mProgressAdmin = new ProgressAdmin();
+      mXmlCreatorProgressAdmin = new XmlCreatorProgressAdmin();
       
       String trackName = extractCleanTrackName();
       mFileName = cleanFilename(mChosenName, trackName);
@@ -138,20 +126,20 @@ public abstract class XmlCreator extends AsyncTask<Void, Integer, Uri>
             cursor = resolver.query(allWaypointsUri, new String[] { "count(" + Waypoints.TABLE + "." + Waypoints._ID + ")" }, null, null, null);
             if (cursor.moveToLast())
             {
-               mProgressAdmin.setWaypointCount(cursor.getInt(0));
+               mXmlCreatorProgressAdmin.setWaypointCount(cursor.getInt(0));
             }
             cursor.close();
             cursor = resolver.query(allMediaUri, new String[] { "count(" + Media.TABLE + "." + Media._ID + ")" }, null, null, null);
             if (cursor.moveToLast())
             {
-                mProgressAdmin.setMediaCount(cursor.getInt(0));
+                mXmlCreatorProgressAdmin.setMediaCount(cursor.getInt(0));
             }
             cursor.close();
             cursor = resolver.query(allMediaUri, new String[] { "count(" + Tracks._ID + ")" }, Media.URI + " LIKE ? and " + Media.URI + " NOT LIKE ?",
                   new String[] { "file://%", "%txt" }, null);
             if (cursor.moveToLast())
             {
-               mProgressAdmin.setCompress( cursor.getInt(0) > 0 ); 
+               mXmlCreatorProgressAdmin.setCompress( cursor.getInt(0) > 0 );
             }
          }
          finally
@@ -223,7 +211,7 @@ public abstract class XmlCreator extends AsyncTask<Void, Integer, Uri>
       {
          Log.w( TAG, "Failed to add file to new XML export. Missing: "+inputFilePath );
       }
-      mProgressAdmin.addMediaProgress();
+      mXmlCreatorProgressAdmin.addMediaProgress();
 
       return target.getName();
    }
@@ -280,7 +268,7 @@ public abstract class XmlCreator extends AsyncTask<Void, Integer, Uri>
             }
             zos.closeEntry();
             in.close();
-            mProgressAdmin.addCompressProgress();
+            mXmlCreatorProgressAdmin.addCompressProgress();
          }
       }
       finally
@@ -436,7 +424,7 @@ public abstract class XmlCreator extends AsyncTask<Void, Integer, Uri>
    {
       if(mProgressListener!= null)
       {
-         mProgressListener.setProgress(mProgressAdmin.getProgress());
+         mProgressListener.setProgress(mXmlCreatorProgressAdmin.getProgress());
       }
    }
 
@@ -459,9 +447,8 @@ public abstract class XmlCreator extends AsyncTask<Void, Integer, Uri>
       }
    }
    
-   public class ProgressAdmin
+   public class XmlCreatorProgressAdmin extends ProgressAdmin
    {
-      long lastUpdate;
       private boolean compressCount;
       private boolean compressProgress;
       private boolean uploadCount;
@@ -496,6 +483,7 @@ public abstract class XmlCreator extends AsyncTask<Void, Integer, Uri>
        *
        * @return Returns the progress as a int.
        */
+      @Override
       public int getProgress()
       {
          int blocks = 0;
@@ -550,15 +538,14 @@ public abstract class XmlCreator extends AsyncTask<Void, Integer, Uri>
       {
          waypointProgress += i;
          considerPublishProgress();
-      } 
+      }
+       @Override
       public void considerPublishProgress()
       {
-         long now = new Date().getTime();
-         if( now - lastUpdate > 1000 )
-         {
-            lastUpdate = now;
-            publishProgress();
-         }         
+          if(mustPublishProgress())
+          {
+              publishProgress();
+          }
       }
    }
 }

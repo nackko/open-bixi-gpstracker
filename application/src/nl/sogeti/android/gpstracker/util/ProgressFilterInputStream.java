@@ -32,22 +32,20 @@ import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import nl.sogeti.android.gpstracker.actions.tasks.GpxParser;
-import nl.sogeti.android.gpstracker.actions.tasks.GpxParser.ProgressAdmin;
-
 /**
  * ????
  *
  * @version $Id: ProgressFilterInputStream.java 1132 2011-10-09 18:52:59Z rcgroot $
  * @author rene (c) Dec 11, 2010, Sogeti B.V.
+ *
+ * @author F8Full Feb 17, 2012
+ * Parsers refactor, this class now takes generic ByteProgressAdmin type
  */
 public class ProgressFilterInputStream extends FilterInputStream
 {
-   GpxParser mAsyncTask;
-   long progress = 0;
-   private ProgressAdmin mProgressAdmin;
+   private ByteProgressAdmin mProgressAdmin;
 
-   public ProgressFilterInputStream(InputStream is, ProgressAdmin progressAdmin)
+   public ProgressFilterInputStream(InputStream is, ByteProgressAdmin progressAdmin)
    {
       super( is );
       mProgressAdmin = progressAdmin;

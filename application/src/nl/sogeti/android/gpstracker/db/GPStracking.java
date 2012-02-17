@@ -245,6 +245,34 @@ public final class GPStracking
        */
       public static final Uri CONTENT_URI = Uri.parse( "content://" + GPStracking.AUTHORITY + "/" + MetaData.TABLE );
    }
+
+    /**
+     * This table contains bike service provider stations' offline data. Note : currently implemented for Bixi
+     *
+     * @author f8full
+     */
+   public static final class Stations extends StationColumns implements android.provider.BaseColumns
+    {
+        //f8f_note : Not sure about this, trying to personalize MIME_TYPE, my understanding is that I'll have to
+        // plug this at a few places in the code
+        /** The MIME type of a CONTENT_URI subdirectory of a single metadata entry. */
+        public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/vnd.qc.f8full.android.bixistation";
+        /** The MIME type of CONTENT_URI providing a directory of media entry. */
+        public static final String CONTENT_TYPE = "vnd.android.cursor.dir/vnd.qc.f8full.android.bixistation";
+        //f8f_note
+        
+        public static final Uri CONTENT_URI = Uri.parse("content://" + GPStracking.AUTHORITY + "/" + Stations.TABLE);
+
+        public static final String TABLE = "stations";
+        
+        static final String CREATE_STATEMENT =
+                "CREATE TABLE " + Stations.TABLE + "(" + " " + Stations._ID         + " " + Stations._ID_TYPE +
+                                                   "," + " " + Stations.NAME        + " " + Stations.NAME_TYPE +
+                                                   "," + " " + Stations.LATITUDE    + " " + Stations.LATITUDE_TYPE +
+                                                   "," + " " + Stations.LONGITUDE   + " " + Stations.LONGITUDE_TYPE +
+                                                   ");";
+
+    }
    
    /**
     * Columns from the tracks table.
@@ -282,6 +310,7 @@ public final class GPStracking
 
        public static final String FREE_DESCRIPTION = "freeDescription";
        static final String FREE_DESCRIPTION_TYPE = "TEXT";
+       //End addition
    }
 
    /**
@@ -358,6 +387,7 @@ public final class GPStracking
     * @author rene
     */
    public static class MetaDataColumns
+       //I have to investigate this, it looks like MediaColumns except for the TEXT NOT NULL key field
    {
       /** The track _id to which this segment belongs */
       public static final String TRACK    = "track";     
@@ -372,4 +402,16 @@ public final class GPStracking
       static final String VALUE_TYPE      = "TEXT NOT NULL";
       static final String _ID_TYPE        = "INTEGER PRIMARY KEY AUTOINCREMENT";
    }
+    
+    public static class StationColumns
+    {
+        //Note : I'll use the _ID column to store the ID provided by the Bixi XML file
+        static final String _ID_TYPE = "INTEGER PRIMARY KEY";
+        public static final String NAME = "name";
+        static final String NAME_TYPE = "TEXT NOT NULL";
+        public static final String LATITUDE = "latitude";
+        static final String LATITUDE_TYPE = "REAL NOT NULL";
+        public static final String LONGITUDE = "longitude";
+        static final String LONGITUDE_TYPE = "REAL NOT NULL";
+    }
 }

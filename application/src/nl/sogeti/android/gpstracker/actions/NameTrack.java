@@ -50,6 +50,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.*;
 import nl.sogeti.android.gpstracker.R;
+import nl.sogeti.android.gpstracker.db.GPStracking.Stations;
 import nl.sogeti.android.gpstracker.db.GPStracking.Tracks;
 
 import java.util.Calendar;
@@ -495,14 +496,8 @@ public class NameTrack extends FragmentActivity //Compatibility requirement : in
         //: in the select clause or concatenated at the end of the corresponding selectArgs[] item
         //So here goes, I put the % in selectArgs, though I don't feel like I use a 'rawQuery'
 
-        //TODO: Replace this to connect to new StationsProvider table
-        /*this means :  - correct URI
-                        - good projection (inspect goofy _ID thing)
-                        - good select, though it will be very similar
-                        - selectArgs should be unchanged
-                        - sortorder shouldn't change either*/
-        String[] stationProjection = {Tracks._ID, Tracks.NAME};
-        String stationSelect = Tracks.NAME + " LIKE ?";
+        String[] stationProjection = {Stations._ID, Stations.NAME};
+        String stationSelect = Stations.NAME + " LIKE ?";
         //Assuming mCurStartStationNameFilter/mCurEndStationNameFilter has been trimmed
         String[] stationSelectArgs = null;
         if (loaderID == STARTSTATIONCURSOR_LOADER)
@@ -515,7 +510,7 @@ public class NameTrack extends FragmentActivity //Compatibility requirement : in
         }
 
         //String[] selectArgs = {"sim%"};
-        String stationSortOrder = Tracks.NAME + " COLLATE LOCALIZED ASC";
+        String stationSortOrder = Stations.NAME + " COLLATE LOCALIZED ASC";
 
         CursorLoader cursorLoader = null;
 
@@ -529,12 +524,12 @@ public class NameTrack extends FragmentActivity //Compatibility requirement : in
 
             cursorLoader = new CursorLoader(this,
                     //        Tracks.CONTENT_URI, projection, select, selectArgs, sortOrder);
-                    Tracks.CONTENT_URI, null, null, null, null);
+                    Stations.CONTENT_URI, null, null, null, null);
         }
         else
         {
             cursorLoader = new CursorLoader(this,
-                    Tracks.CONTENT_URI, stationProjection, stationSelect, stationSelectArgs, stationSortOrder);
+                    Stations.CONTENT_URI, stationProjection, stationSelect, stationSelectArgs, stationSortOrder);
             //Tracks.CONTENT_URI, null, null, null, null);
         }
 
@@ -601,4 +596,3 @@ public class NameTrack extends FragmentActivity //Compatibility requirement : in
         }
     }
 }
-   

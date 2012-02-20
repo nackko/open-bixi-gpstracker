@@ -73,7 +73,7 @@ public class NameTrack extends FragmentActivity //Compatibility requirement : in
 
    private EditText mTrackNameView;
    //F8F BEGIN
-   private CheckBox mTrackHelmetView;
+    private RadioGroup mHelmetRadioGroup;
    private Spinner mOriginReasonSpinner;
    private Spinner mDestinationReasonSpinner;
 
@@ -184,12 +184,15 @@ public class NameTrack extends FragmentActivity //Compatibility requirement : in
         ContentValues values = new ContentValues();
         values.put( Tracks.NAME, trackName );
 
-
-        if (mTrackHelmetView.isChecked())
+        if (mHelmetRadioGroup.getCheckedRadioButtonId() == -1)
+        {
+            values.put(Tracks.WITH_HELMET, "-1");
+        }
+        else if (mHelmetRadioGroup.getCheckedRadioButtonId() == R.id.helmetRadio_yes)
         {
             values.put(Tracks.WITH_HELMET, "1");
         }
-        else
+        else    //mHelmetRadioGroup.getCheckedRadioButtonId() == R.id.helmetRadio_no
         {
             values.put(Tracks.WITH_HELMET, "0");
         }
@@ -355,7 +358,7 @@ public class NameTrack extends FragmentActivity //Compatibility requirement : in
             factory = LayoutInflater.from( this );
             view = factory.inflate( R.layout.namedialog, null );
             mTrackNameView = (EditText) view.findViewById( R.id.nameField );
-             mTrackHelmetView = (CheckBox) view.findViewById(R.id.helmetCheck);
+             mHelmetRadioGroup = (RadioGroup) view.findViewById(R.id.helmetRadioGroup);
              mServiceRatingBar = (RatingBar) view.findViewById(R.id.serviceRatingBar);
              mOriginReasonSpinner = (Spinner) view.findViewById(R.id.originReasonSpinner);
              mDestinationReasonSpinner = (Spinner) view.findViewById(R.id.destinationReasonSpinner);
@@ -428,19 +431,21 @@ public class NameTrack extends FragmentActivity //Compatibility requirement : in
                  mTrackNameView.setText( trackName );
                  mTrackNameView.setSelection( 0, trackName.length() );
 
-                 int helmetIdx = trackCursor.getColumnIndex(Tracks.WITH_HELMET);
-                 boolean isnull = trackCursor.isNull(helmetIdx);
+                 //boolean nullHelmet = trackCursor.isNull(trackCursor.getColumnIndex(Tracks.WITH_HELMET));
 
-                 int helmetValue = trackCursor.getInt(helmetIdx);
+                 int helmetValue = trackCursor.getInt(trackCursor.getColumnIndex(Tracks.WITH_HELMET));
 
-                 //if (trackCursor.getInt(trackCursor.getColumnIndex(Tracks.WITH_HELMET)) == 1)
-                 if (helmetValue == 1)
+                 if (/*nullHelmet ||*/ helmetValue == -1)
                  {
-                     mTrackHelmetView.setChecked(true);
+                     mHelmetRadioGroup.clearCheck();
                  }
-                 else
+                 else if (helmetValue == 1)
                  {
-                     mTrackHelmetView.setChecked(false);
+                     mHelmetRadioGroup.check(R.id.helmetRadio_yes);
+                 }
+                 else if (helmetValue == 0)
+                 {
+                     mHelmetRadioGroup.check(R.id.helmetRadio_no);
                  }
 
                  int startReasonIdx = trackCursor.getColumnIndex(Tracks.START_REASON);

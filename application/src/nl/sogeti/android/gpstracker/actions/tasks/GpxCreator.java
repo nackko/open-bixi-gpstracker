@@ -28,17 +28,13 @@
  */
 package nl.sogeti.android.gpstracker.actions.tasks;
 
-import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.TimeZone;
-
+import android.content.ContentResolver;
+import android.content.Context;
+import android.database.Cursor;
+import android.net.Uri;
+import android.provider.MediaStore.MediaColumns;
+import android.util.Log;
+import android.util.Xml;
 import nl.sogeti.android.gpstracker.R;
 import nl.sogeti.android.gpstracker.actions.utils.ProgressListener;
 import nl.sogeti.android.gpstracker.db.GPStracking;
@@ -47,16 +43,12 @@ import nl.sogeti.android.gpstracker.db.GPStracking.Segments;
 import nl.sogeti.android.gpstracker.db.GPStracking.Tracks;
 import nl.sogeti.android.gpstracker.db.GPStracking.Waypoints;
 import nl.sogeti.android.gpstracker.util.Constants;
-
 import org.xmlpull.v1.XmlSerializer;
 
-import android.content.ContentResolver;
-import android.content.Context;
-import android.database.Cursor;
-import android.net.Uri;
-import android.provider.MediaStore.MediaColumns;
-import android.util.Log;
-import android.util.Xml;
+import java.io.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
 
 /**
  * Create a GPX version of a stored track
@@ -70,6 +62,7 @@ public class GpxCreator extends XmlCreator
    public static final String NS_GPX_11 = "http://www.topografix.com/GPX/1/1";
    public static final String NS_GPX_10 = "http://www.topografix.com/GPX/1/0";
    public static final String NS_OGT_10 = "http://gpstracker.android.sogeti.nl/GPX/1/0";
+   public static final String NS_F8F_10 = "http://bixitracker.android.f8full.net/GPX/1/0";
    public static final SimpleDateFormat ZULU_DATE_FORMATER = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
    static
    {
@@ -206,6 +199,8 @@ public class GpxCreator extends XmlCreator
       serializer.setPrefix("xsi", NS_SCHEMA);
       serializer.setPrefix("gpx10", NS_GPX_10);
       serializer.setPrefix("ogt10", NS_OGT_10);
+      serializer.setPrefix("f8f", NS_F8F_10);
+
       serializer.text("\n");
       serializer.startTag("", "gpx");
       serializer.attribute(null, "version", "1.1");
@@ -229,42 +224,11 @@ public class GpxCreator extends XmlCreator
       serializer.startTag("", "name");
       serializer.text(mName);
       serializer.endTag("", "name");
+       serializeTrackExtensions(mContext, serializer, trackUri);
+
+
       //TODO: ADD EXTENSIONS HERE FROM MY OWN SCHEMA
-       //Station_depart ID, terminal_name, location
-       //Station_arrivee ID, terminal_name, location
-       //Raison_depart From list like
-       // Location
-       //  work, home, out
-       // or activity ? restaurant (food), groceries (food),
-       // leisure, shopping,
-       //KISS principle ?
-       //Raison_arrivée same as above
-       //Casque Boolean value as of did I had one or not
-       //Bixi service rating, as a value between 1 to 5
-       //Note : I also need a free input description, as to explain my rating if required or any other information
-       //Also, seeing what populates this free field gives ideas on what to add next
-       //SEE As Ref
-//       serializer.text("\n");
-//       serializer.startTag("", "extensions");
-//
-//       double speed = waypointsCursor.getDouble(5);
-//       double accuracy = waypointsCursor.getDouble(6);
-//       double bearing = waypointsCursor.getDouble(7);
-//       if (speed > 0.0)
-//       {
-//           quickTag(serializer, NS_GPX_10, "speed", Double.toString(speed));
-//       }
-//       if (accuracy > 0.0)
-//       {
-//           quickTag(serializer, NS_OGT_10, "accuracy", Double.toString(accuracy));
-//       }
-//       if (bearing != 0.0)
-//       {
-//           quickTag(serializer, NS_GPX_10, "course", Double.toString(bearing));
-//       }
-//       serializer.endTag("", "extensions");
-//       serializer.text("\n");
-//       serializer.endTag("", "trkpt");
+
 
 
       // The list of segments in the track
@@ -327,6 +291,80 @@ public class GpxCreator extends XmlCreator
          mName = mChosenName;
       }
    }
+    
+   private void serializeTrackExtensions(Context context, XmlSerializer serializer, Uri trackUri)  throws IOException
+   {
+       if (isCancelled())
+       {
+           throw new IOException("Fail to execute request due to canceling");
+       }
+
+
+       ContentResolver resolver = context.getContentResolver();
+       Cursor trackCursor = null;
+
+       try
+       {
+           trackCursor = resolver.query(trackUri, new String[] { Tracks._ID, Tracks.WITH_HELMET, Tracks.START_REASON, Tracks.END_REASON, Tracks.START_STATION_NAME, Tracks.END_STATION_NAME, Tracks.SERVICE_RATING }, null, null, null);
+           //TODO: add IDs from Bixi XML
+           if(trackCursor.moveToFirst())
+           {
+               serializer.text("\n");
+               serializer.startTag("", "extensions");
+               quickTag(serializer, NS_F8F_10, "helmet",  Integer.toString(trackCursor.getInt(1)));
+               quickTag(serializer, NS_F8F_10, "startReason",  trackCursor.getString(2));
+               quickTag(serializer, NS_F8F_10, "endReason",  trackCursor.getString(3));
+               quickTag(serializer, NS_F8F_10, "startStationName",  trackCursor.getString(4));
+               quickTag(serializer, NS_F8F_10, "endStationName",  trackCursor.getString(5));
+               quickTag(serializer, NS_F8F_10, "rating",  Integer.toString(trackCursor.getInt(6)));
+               serializer.text("\n");
+               serializer.endTag("", "extensions");
+               //Station_depart ID, terminal_name, location
+               //Station_arrivee ID, terminal_name, location
+               //Raison_depart From list like
+               // Location
+               //  work, home, out
+               // or activity ? restaurant (food), groceries (food),
+               // leisure, shopping,
+               //KISS principle ?
+               //Raison_arrivée same as above
+               //Casque Boolean value as of did I had one or not
+               //Bixi service rating, as a value between 1 to 5
+               //Note : I also need a free input description, as to explain my rating if required or any other information
+               //Also, seeing what populates this free field gives ideas on what to add next
+               //SEE As Ref
+//       serializer.text("\n");
+//       serializer.startTag("", "extensions");
+//
+//       double speed = waypointsCursor.getDouble(5);
+//       double accuracy = waypointsCursor.getDouble(6);
+//       double bearing = waypointsCursor.getDouble(7);
+//       if (speed > 0.0)
+//       {
+//           quickTag(serializer, NS_GPX_10, "speed", Double.toString(speed));
+//       }
+//       if (accuracy > 0.0)
+//       {
+//           quickTag(serializer, NS_OGT_10, "accuracy", Double.toString(accuracy));
+//       }
+//       if (bearing != 0.0)
+//       {
+//           quickTag(serializer, NS_GPX_10, "course", Double.toString(bearing));
+//       }
+//       serializer.endTag("", "extensions");
+//       serializer.text("\n");
+//       serializer.endTag("", "trkpt");
+
+           }
+       }
+       finally
+       {
+           if (trackCursor != null)
+           {
+               trackCursor.close();
+           }
+       }
+   }
 
    private void serializeSegments(XmlSerializer serializer, Uri segments) throws IOException
    {
@@ -378,7 +416,7 @@ public class GpxCreator extends XmlCreator
          {
             do
             {
-               mProgressAdmin.addWaypointProgress(1);
+               mXmlCreatorProgressAdmin.addWaypointProgress(1);
 
                serializer.text("\n");
                serializer.startTag("", "trkpt");

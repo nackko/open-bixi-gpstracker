@@ -262,11 +262,17 @@ public class TrackList extends ListActivity implements ProgressListener
             showDialog(DIALOG_VACUUM);
             break;
          case MENU_BUILD_STATIONS_TABLE:
-             DatabaseHelper helper = new DatabaseHelper(getApplicationContext());
-
+             //Bixi over my private network
              //new StationsXMLParser(TrackList.this, TrackList.this).execute("http://192.168.1.18:666/01_10_2010__16_55_01.xml");
+             //Bixi over the public web -- to replace with actual feed URL when season will be started
              new StationsXMLParser(TrackList.this, TrackList.this).execute("http://f8full.is-a-geek.org:666/01_10_2010__16_55_01.xml");
+             //Toronto over the public web
              //new StationsXMLParser(TrackList.this, TrackList.this).execute("https://toronto.bixi.com/data/bikeStations.xml");
+             //Toulouse over the public web
+             //new StationsXMLParser(TrackList.this, TrackList.this).execute("http://f8full.is-a-geek.org:666/ToulouseStationsStaticData-xml.xml");
+
+             //Lyon, over the public web, URLs are constructed in parser
+             //new StationsJSONParser(TrackList.this, TrackList.this).execute();
 
              break;
          case MENU_PICKER:

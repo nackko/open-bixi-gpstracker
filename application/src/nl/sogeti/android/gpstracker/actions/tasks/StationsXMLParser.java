@@ -135,7 +135,7 @@ public class StationsXMLParser extends AsyncTask<String, Void, Uri>
             ProgressFilterInputStream pfis = new ProgressFilterInputStream(xmlInputStream, mStationsXMLParserProgressAdmin);
             BufferedInputStream bis = new BufferedInputStream(pfis);
 
-            UnicodeReader ur = new UnicodeReader(pfis, "UTF-8");
+            UnicodeReader ur = new UnicodeReader(bis, "UTF-8");
 
             xmlParser.setInput(ur);
 
@@ -162,14 +162,6 @@ public class StationsXMLParser extends AsyncTask<String, Void, Uri>
 
                     while ( eventType != XmlPullParser.END_DOCUMENT && !xmlParser.getName().equals("station") )
                     {
-                        if(stationContent.size() == 4)
-                            //I should have a complete station now
-                        {
-                            //This returns the URI
-                            mContentResolver.insert(Stations.CONTENT_URI, stationContent);
-                            stationContent.clear();
-                        }
-
                         if(eventType == XmlPullParser.START_TAG && xmlParser.getName().equals("id"))
                         {
                             xmlParser.next();   //to get to TEXT
@@ -221,6 +213,14 @@ public class StationsXMLParser extends AsyncTask<String, Void, Uri>
                                 eventType = xmlParser.getEventType();
                             }
 
+                        }
+
+                        if(stationContent.size() == 4)
+                        //I should have a complete station now
+                        {
+                            //This returns the URI
+                            mContentResolver.insert(Stations.CONTENT_URI, stationContent);
+                            stationContent.clear();
                         }
                     }
                 }

@@ -199,7 +199,7 @@ public class GpxCreator extends XmlCreator
       serializer.setPrefix("xsi", NS_SCHEMA);
       serializer.setPrefix("gpx10", NS_GPX_10);
       serializer.setPrefix("ogt10", NS_OGT_10);
-      serializer.setPrefix("f8f", NS_F8F_10);
+      serializer.setPrefix("f8f10", NS_F8F_10);
 
       serializer.text("\n");
       serializer.startTag("", "gpx");

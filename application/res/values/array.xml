@@ -1,5 +1,5 @@
 <resources
-   xmlns:android="http://schemas.android.com/apk/res/android">
+        >
 
    <string-array
       name="state_choices">
@@ -99,6 +99,12 @@
         <item>Brébeuf / Saint-Grégoire</item>
         <item>Notre Dame / Place Jacques Cartier</item>
         </string-array>
+
+    <string-array
+            name="bikesystem_choices">
+        <item>VéloToulouse</item>
+        <item>Velo\'v</item>
+    </string-array>
 
 
    <string-array

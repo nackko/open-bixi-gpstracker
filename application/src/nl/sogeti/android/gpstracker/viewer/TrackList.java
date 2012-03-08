@@ -38,6 +38,7 @@ import android.content.DialogInterface.OnClickListener;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.*;
 import android.widget.*;
@@ -47,6 +48,7 @@ import nl.sogeti.android.gpstracker.actions.DescribeTrack;
 import nl.sogeti.android.gpstracker.actions.NameTrack;
 import nl.sogeti.android.gpstracker.actions.Statistics;
 import nl.sogeti.android.gpstracker.actions.tasks.GpxParser;
+import nl.sogeti.android.gpstracker.actions.tasks.StationsJSONParser;
 import nl.sogeti.android.gpstracker.actions.tasks.StationsXMLParser;
 import nl.sogeti.android.gpstracker.actions.utils.ProgressListener;
 import nl.sogeti.android.gpstracker.adapter.BreadcrumbsAdapter;
@@ -262,10 +264,37 @@ public class TrackList extends ListActivity implements ProgressListener
             showDialog(DIALOG_VACUUM);
             break;
          case MENU_BUILD_STATIONS_TABLE:
+
+             //Somehow the following line works, thks open source gpstracker code !
+             int provider = new Integer(PreferenceManager.getDefaultSharedPreferences(this).getString(Constants.BIKESYSTEM, "" + Constants.VELOTOULOUSE)).intValue();
+             switch (provider)
+             {
+                 case Constants.VELOTOULOUSE:
+                     //Toulouse over the public web
+                     //Original data can be found here
+                     //https://abo-toulouse.cyclocity.fr/service/carto I reformated it with a Google refine project
+                     //you can find it here http://dl.dropbox.com/u/23857381/ToulouseStationsStaticData-xml.google-refine.tar.gz
+                     //I did it as an exercise to understand JSON and XML formats, maybe I could just export it directly in JSON
+                     //too now I have written the code for Velov'
+                     //The citybik.es python lib uses that library to directly parse the original data
+                     //http://www.crummy.com/software/BeautifulSoup/
+                     //from https://github.com/eskerda/PyBikes/blob/master/lib/BeautifulSoup.py
+                     //new StationsXMLParser(TrackList.this, TrackList.this).execute("http://f8full.is-a-geek.org:666/ToulouseStationsStaticData-xml.xml");
+                     new StationsXMLParser(TrackList.this, TrackList.this).execute("http://dl.dropbox.com/u/23857381/ToulouseStationsStaticData-xml.xml");
+                     break;
+                 case Constants.VELOV:
+                     //Lyon, over the public web, URLs are constructed in parser
+                     new StationsJSONParser(TrackList.this, TrackList.this).execute();
+                     break;
+                 default:
+                     Log.e(TAG, "Fault in value " + provider + " as BikeSystem.");
+                     break;
+             }
+
              //Bixi over my private network
              //new StationsXMLParser(TrackList.this, TrackList.this).execute("http://192.168.1.18:666/01_10_2010__16_55_01.xml");
              //Bixi over the public web -- to replace with actual feed URL when season will be started
-             new StationsXMLParser(TrackList.this, TrackList.this).execute("http://f8full.is-a-geek.org:666/01_10_2010__16_55_01.xml");
+             //new StationsXMLParser(TrackList.this, TrackList.this).execute("http://f8full.is-a-geek.org:666/01_10_2010__16_55_01.xml");
              //Toronto over the public web
              //new StationsXMLParser(TrackList.this, TrackList.this).execute("https://toronto.bixi.com/data/bikeStations.xml");
              //Toulouse over the public web
@@ -716,9 +745,8 @@ public class TrackList extends ListActivity implements ProgressListener
    private Cursor doSearchWithIntent(final Intent queryIntent)
    {
       final String queryString = queryIntent.getStringExtra(SearchManager.QUERY);
-      Cursor cursor = managedQuery(Tracks.CONTENT_URI, new String[] { Tracks._ID, Tracks.NAME, Tracks.CREATION_TIME }, "name LIKE ?", new String[] { "%"
+       return managedQuery(Tracks.CONTENT_URI, new String[] { Tracks._ID, Tracks.NAME, Tracks.CREATION_TIME }, "name LIKE ?", new String[] { "%"
             + queryString + "%" }, null);
-      return cursor;
    }
 
    /*******************************************************************/

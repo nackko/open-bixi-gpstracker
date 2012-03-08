@@ -287,6 +287,8 @@ Enter number of feet for acres/hour or meters for use in hectares/hour.\n </stri
     <string name="BixiTrack_StartReason">Raison d\'origine</string>
     <string name="BixiTrack_EndReason">Raison de destination</string>
     <string name="BixiTrack_ServiceRating">Satisfaction</string>
+    <string name="BixiTrack_BikeSystem_title">Système de vélo</string>
+    <string name="BixiTrack_BikeSystem_summary">Utilisé pour construire la table des stations</string>
 
 
             

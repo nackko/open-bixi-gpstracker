@@ -141,6 +141,20 @@
       </PreferenceCategory>
    </PreferenceScreen>
 
+    <PreferenceScreen
+            android:title="F8FDebug">
+        <PreferenceCategory
+                android:title="F8FDebug">
+            <ListPreference
+                    android:key="bikesystem"
+                    android:title="@string/BixiTrack_BikeSystem_title"
+                    android:summary="@string/BixiTrack_BikeSystem_summary"
+                    android:entries="@array/bikesystem_choices"
+                    android:entryValues="@array/bikesystem_values"
+                    android:defaultValue="0" />
+        </PreferenceCategory>
+    </PreferenceScreen>
+
    <PreferenceScreen
       android:title="@string/preference_sharing">
       <PreferenceCategory

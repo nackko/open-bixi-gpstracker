@@ -28,13 +28,13 @@
  */
 package nl.sogeti.android.gpstracker.util;
 
-import java.io.File;
-
-import nl.sogeti.android.gpstracker.db.GPStracking;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Environment;
 import android.preference.PreferenceManager;
+import nl.sogeti.android.gpstracker.db.GPStracking;
+
+import java.io.File;
 
 
 /**
@@ -98,6 +98,11 @@ public class Constants
    public static final String OSM_PASSWORD = "OSM_PASSWORD";
    public static final String OSM_VISIBILITY = "OSM_VISIBILITY";
    public static final String DATASOURCES_KEY = "DATASOURCES";
+
+    //Added for Bixi/ShamefullMultiSystemDraft tracking
+    public static final String BIKESYSTEM = "bikesystem";
+    public static final int VELOTOULOUSE = 0;
+    public static final int VELOV = 1;
    
    /**
     * Broadcast intent action indicating that the logger service state has
